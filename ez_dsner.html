@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EZ-DSNER</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:       #0f1117;
+  --paper:     #f7f4ee;
+  --cream:     #ede9e0;
+  --rule:      #c8c2b4;
+  --sage:      #4a7c59;
+  --sage-lt:   #d4e8db;
+  --amber:     #c47f17;
+  --amber-lt:  #fdf1d6;
+  --crimson:   #a83240;
+  --crimson-lt:#fde8ea;
+  --slate:     #3a4a5c;
+  --slate-lt:  #dde3ec;
+  --blue:      #4a90d9;
+  --blue-dk:   #3570b5;
+  --blue-lt:   #d6e6f7;
+  --blue-shadow: #2c5a8f;
+  --header-bg: #e8e8ec;
+  --header-fg: #1a1a2e;
+  --card-bg:   #fff;
+  --input-bg:  #fafaf8;
+  --body-font: 'Times New Roman', Times, Georgia, 'DejaVu Serif', serif;
+  --serif:     'Playfair Display', 'Times New Roman', Times, Georgia, serif;
+}
+
+/* ── DARK MODE ── */
+body.dark-mode {
+  --paper:     #1a1a2e;
+  --ink:       #e0e0e8;
+  --cream:     #2a2a3e;
+  --rule:      #3a3a50;
+  --header-bg: #12121e;
+  --header-fg: #e0e0e8;
+  --card-bg:   #222236;
+  --input-bg:  #1e1e30;
+  --sage-lt:   #1a3a28;
+  --amber-lt:  #3a2a10;
+  --crimson-lt:#3a1a20;
+  --slate-lt:  #1a2a3a;
+  --blue-lt:   #1a2a4a;
+}
+
+/* ── ACCESSIBILITY: LARGE TEXT ── */
+body.a11y-large-text {
+  font-size: 120%;
+}
+body.a11y-large-text .card-title { font-size: 1.15rem; }
+body.a11y-large-text .card-sub { font-size: .92rem; }
+body.a11y-large-text .btn { font-size: 1.05rem; padding: .65rem 1.3rem; }
+body.a11y-large-text label { font-size: .85rem; }
+body.a11y-large-text input, body.a11y-large-text textarea, body.a11y-large-text select { font-size: 1.1rem; }
+
+/* ── ACCESSIBILITY: HIGH CONTRAST ── */
+body.a11y-high-contrast {
+  --ink: #000;
+  --paper: #fff;
+  --rule: #333;
+  --cream: #ddd;
+  --card-bg: #fff;
+  --input-bg: #fff;
+  --header-bg: #000;
+  --header-fg: #fff;
+}
+body.a11y-high-contrast .card { border-width: 2.5px; border-color: #000; }
+body.a11y-high-contrast .btn { border: 2px solid #000; }
+body.a11y-high-contrast .ent { text-decoration: underline; text-decoration-thickness: 2px; }
+
+/* ── ACCESSIBILITY: DYSLEXIA-FRIENDLY ── */
+body.a11y-dyslexia {
+  --body-font: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+  letter-spacing: 0.05em;
+  word-spacing: 0.15em;
+  line-height: 1.8;
+}
+
+/* ── ACCESSIBILITY: REDUCED MOTION ── */
+body.a11y-reduced-motion, body.a11y-reduced-motion * {
+  animation: none !important;
+  transition: none !important;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:var(--body-font);
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  transition:background .3s,color .3s;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--header-bg);
+  color:var(--header-fg);
+  padding:2.5rem 3rem 2rem;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'';
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 39px,rgba(0,0,0,.03) 39px,rgba(0,0,0,.03) 40px
+  ),repeating-linear-gradient(
+    90deg,transparent,transparent 39px,rgba(0,0,0,.03) 39px,rgba(0,0,0,.03) 40px
+  );
+}
+.header-inner{position:relative;max-width:1400px;margin:0 auto;}
+h1{
+  font-family:var(--serif);font-size:3.4rem;
+  line-height:1.1;font-weight:900;
+  background:linear-gradient(135deg,#1a1a2e 30%,#4a90d9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+body.dark-mode h1{
+  background:linear-gradient(135deg,#e0e0e8 30%,#6ab0f0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.header-sub{
+  margin-top:.6rem;font-size:1rem;color:#6b7280;
+  max-width:600px;line-height:1.6;
+  font-family:'Times New Roman', Times, Georgia, serif;
+}
+body.dark-mode .header-sub{color:#8a8a9e;}
+.pipeline-label{
+  margin-top:1.4rem;font-size:.8rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#6b7a82;
+  font-family:'Times New Roman', Times, Georgia, serif;
+}
+.pipeline-steps{
+  display:flex;align-items:center;gap:0;
+  margin-top:.5rem;flex-wrap:wrap;gap:.3rem;
+}
+.ps{
+  background:rgba(0,0,0,.05);
+  border:1px solid rgba(0,0,0,.1);
+  padding:.25rem .7rem;border-radius:3px;
+  font-size:.8rem;color:#4a5568;
+  display:flex;align-items:center;gap:.35rem;
+  font-family:'Times New Roman', Times, Georgia, serif;
+}
+body.dark-mode .ps{
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.12);
+  color:#9aa0b0;
+}
+.ps-dot{width:6px;height:6px;border-radius:50%;}
+.ps-arrow{color:#9ca3af;font-size:.85rem;}
+
+/* ── HEADER CONTROLS ── */
+.header-controls{
+  display:flex;align-items:center;gap:.5rem;flex-shrink:0;
+}
+.header-btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem .8rem;border:1.5px solid rgba(0,0,0,.15);border-radius:4px;
+  font-family:var(--body-font);font-size:.8rem;font-weight:700;
+  background:rgba(0,0,0,.04);color:var(--header-fg);
+  cursor:pointer;transition:all .2s;
+}
+.header-btn:hover{
+  background:rgba(0,0,0,.08);
+  border-color:rgba(0,0,0,.25);
+  transform:translateY(-1px);
+}
+body.dark-mode .header-btn{
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.06);
+  color:#e0e0e8;
+}
+body.dark-mode .header-btn:hover{
+  background:rgba(255,255,255,.12);
+  border-color:rgba(255,255,255,.35);
+}
+.header-btn.active{
+  background:var(--blue);color:#fff;border-color:var(--blue);
+}
+
+/* ── ACCESSIBILITY PANEL ── */
+.a11y-panel{
+  display:none;
+  background:var(--card-bg);
+  border:1.5px solid var(--rule);
+  border-radius:4px;
+  padding:1rem 1.2rem;
+  margin-top:.8rem;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+.a11y-panel.open{display:block;}
+.a11y-panel h3{
+  font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;
+  color:#6b7a82;margin-bottom:.7rem;font-family:var(--body-font);
+}
+.a11y-option{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.4rem 0;font-size:.88rem;cursor:pointer;
+  font-family:var(--body-font);color:var(--ink);
+}
+.a11y-option input[type="checkbox"]{
+  width:18px;height:18px;cursor:pointer;accent-color:var(--blue);
+}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:1400px;margin:0 auto;padding:2.5rem 3rem;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.grid-full{margin-bottom:1.5rem;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:4px;
+  padding:1.4rem 1.6rem;
+  box-shadow:3px 3px 0 var(--rule);
+  transition:box-shadow .2s,transform .2s;
+}
+.card:hover{box-shadow:5px 5px 0 var(--rule);transform:translate(-1px,-1px);}
+.card-head{
+  display:flex;align-items:center;gap:.7rem;
+  margin-bottom:1.1rem;padding-bottom:.8rem;
+  border-bottom:1px solid var(--cream);
+}
+.step-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:2px;
+  font-size:.75rem;font-weight:700;flex-shrink:0;
+}
+.card-title{font-size:.95rem;font-weight:700;letter-spacing:.01em;font-family:var(--body-font);}
+.card-sub{font-size:.78rem;color:#8a8a8a;margin-top:.15rem;font-family:var(--body-font);}
+
+/* color themes per step */
+.step-fetch  {background:var(--blue-lt);color:var(--blue);}
+.step-dict   {background:var(--blue-lt);color:var(--blue);}
+.step-model  {background:var(--blue-lt);color:var(--blue);}
+.step-bioc   {background:var(--blue-lt);color:var(--blue);}
+.step-output {background:var(--ink);color:var(--paper);}
+
+/* ── FORM ELEMENTS ── */
+label{
+  display:block;font-size:.72rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:#6b7680;margin-bottom:.35rem;
+  font-family:var(--body-font);
+}
+input,textarea,select{
+  width:100%;font-family:var(--body-font);font-size:.95rem;
+  padding:.55rem .8rem;
+  border:1.5px solid var(--rule);border-radius:3px;
+  background:var(--input-bg);color:var(--ink);
+  transition:border-color .2s,box-shadow .2s;
+  outline:none;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(74,144,217,.15);
+  background:var(--card-bg);
+}
+textarea{resize:vertical;min-height:110px;line-height:1.6;font-size:.9rem;}
+.input-hint{font-size:.75rem;color:#9ca3a8;margin-top:.3rem;font-family:var(--body-font);}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.55rem 1.1rem;border:none;border-radius:3px;
+  font-family:var(--body-font);font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:.01em;
+}
+.btn-reset{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem .8rem;border:1.5px solid rgba(0,0,0,.15);border-radius:4px;
+  font-family:var(--body-font);font-size:.8rem;font-weight:700;
+  background:rgba(0,0,0,.04);color:var(--header-fg);
+  cursor:pointer;transition:all .2s;
+}
+.btn-reset:hover{
+  background:rgba(0,0,0,.08);
+  border-color:rgba(0,0,0,.25);
+  transform:translateY(-1px);
+}
+body.dark-mode .btn-reset{
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.06);
+  color:#e0e0e8;
+}
+.btn-sage{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--blue-shadow);}
+.btn-sage:hover:not(:disabled){background:var(--blue-dk);box-shadow:3px 3px 0 var(--blue-shadow);transform:translate(-1px,-1px);}
+.btn-amber{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--blue-shadow);}
+.btn-amber:hover:not(:disabled){background:var(--blue-dk);box-shadow:3px 3px 0 var(--blue-shadow);transform:translate(-1px,-1px);}
+.btn-slate{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--blue-shadow);}
+.btn-slate:hover:not(:disabled){background:var(--blue-dk);box-shadow:3px 3px 0 var(--blue-shadow);transform:translate(-1px,-1px);}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--rule);}
+.btn-ghost:hover:not(:disabled){border-color:var(--blue);color:var(--blue);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+.btn-row{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem;}
+
+/* ── MODEL CARDS ── */
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.6rem 0 1rem;}
+.model-opt{
+  border:1.5px solid var(--rule);border-radius:3px;
+  padding:.7rem .9rem;cursor:pointer;transition:all .2s;
+  background:#fafaf8;
+}
+.model-opt:hover{border-color:var(--sage);background:var(--sage-lt);}
+.model-opt.active{
+  border-color:var(--sage);background:var(--sage-lt);
+  box-shadow:2px 2px 0 var(--sage);
+}
+.model-name{font-size:.88rem;font-weight:700;color:var(--ink);font-family:var(--body-font);}
+.model-desc{font-size:.75rem;color:#7a8a80;margin-top:.15rem;font-family:var(--body-font);}
+
+/* ── PARAM GRID ── */
+.param-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.param-item label{font-size:.68rem;}
+.param-item input{font-size:.82rem;padding:.4rem .6rem;}
+
+/* ── STATUS BAR ── */
+.status-bar{
+  padding:.6rem 1rem;border-radius:3px;font-size:.88rem;
+  margin-top:.8rem;display:flex;align-items:center;gap:.6rem;
+  font-family:var(--body-font);
+}
+.status-ok  {background:var(--sage-lt); color:var(--sage);  border:1px solid #b8dac0;}
+.status-err {background:var(--crimson-lt);color:var(--crimson);border:1px solid #f0b8be;}
+.status-info{background:var(--slate-lt); color:var(--slate); border:1px solid #c0cad6;}
+.status-warn{background:var(--amber-lt); color:var(--amber); border:1px solid #f0d8a0;}
+
+/* ── ABSTRACT DISPLAY ── */
+.abstract-box{
+  background:var(--input-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:1rem 1.1rem;margin-top:.8rem;
+  max-height:280px;overflow-y:auto;
+}
+.abstract-title{font-weight:700;font-size:.95rem;color:var(--blue);margin-bottom:.5rem;font-family:var(--body-font);}
+.abstract-body{font-size:.88rem;color:var(--ink);opacity:.75;line-height:1.7;font-family:var(--body-font);}
+
+/* ── CONLL PREVIEW ── */
+.conll-box{
+  background:#0f1117;border-radius:3px;
+  padding:.9rem 1.1rem;margin-top:.8rem;
+  max-height:160px;overflow-y:auto;
+  font-size:.75rem;color:#7ab8e8;line-height:1.8;
+  font-family:'Courier New', Courier, monospace;
+}
+
+/* ── PIPELINE STATUS ── */
+.pipeline-track{
+  display:flex;align-items:stretch;gap:0;
+  margin:1.2rem 0;
+  border:1.5px solid var(--rule);border-radius:4px;
+  overflow:hidden;
+}
+.track-step{
+  flex:1;padding:.7rem .5rem;text-align:center;
+  font-size:.75rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:#aaa;
+  background:var(--input-bg);
+  border-right:1px solid var(--rule);
+  transition:all .3s;position:relative;
+  font-family:var(--body-font);
+}
+.track-step:last-child{border-right:none;}
+.track-step.done{background:var(--blue-lt);color:var(--blue);}
+.track-step.running{
+  background:var(--amber-lt);color:var(--amber);
+  animation:pulse .8s ease-in-out infinite alternate;
+}
+@keyframes pulse{from{opacity:.7}to{opacity:1}}
+.track-step.error{background:var(--crimson-lt);color:var(--crimson);}
+
+/* ── ANNOTATION DISPLAY ── */
+.anno-box{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:1.4rem 1.6rem;line-height:2.2;
+  font-family:var(--body-font);font-size:1.05rem;
+  margin-top:.8rem;color:var(--ink);
+}
+.ent{
+  font-weight:700;
+  color:#3a8fd4;
+  cursor:default;
+}
+.ent-trait{
+  color:#3a8fd4;
+}
+
+/* ── BIOC XML ── */
+.xml-box{
+  background:#0f1117;border-radius:3px;
+  padding:1.1rem 1.3rem;margin-top:.8rem;
+  max-height:340px;overflow-y:auto;position:relative;
+}
+.xml-code{
+  font-family:var(--mono);font-size:.75rem;
+  color:#7ab8e8;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;
+}
+.xml-tag{color:#89cff0;}
+.xml-attr{color:#f4c542;}
+.xml-val{color:#f08080;}
+.xml-comment{color:#6b8080;}
+.copy-float{
+  position:absolute;top:.7rem;right:.8rem;
+  font-size:.72rem;padding:.3rem .7rem;
+}
+
+/* ── STATS ROW ── */
+.stats-row{display:flex;gap:1rem;margin:.8rem 0;flex-wrap:wrap;}
+.stat{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:.6rem 1rem;text-align:center;flex:1;min-width:90px;
+  box-shadow:2px 2px 0 var(--rule);
+}
+.stat-n{font-size:1.8rem;font-weight:700;color:var(--blue);font-family:var(--body-font);}
+.stat-l{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#8a8a8a;margin-top:.1rem;font-family:var(--body-font);}
+
+/* ── SPINNER ── */
+.spin{
+  display:inline-block;width:12px;height:12px;
+  border:2px solid currentColor;border-top-color:transparent;
+  border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
+
+/* ── FUNCTION LIBRARY SIDEBAR ── */
+.fn-lib{
+  background:var(--ink);border-radius:4px;
+  padding:1.2rem 1.4rem;color:var(--paper);
+}
+.fn-lib h3{
+  font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  color:#6b8080;margin-bottom:.9rem;
+}
+.fn-item{
+  display:flex;align-items:baseline;gap:.6rem;
+  padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:.75rem;
+}
+.fn-item:last-child{border-bottom:none;}
+.fn-name{color:#a0c8a8;font-weight:700;white-space:nowrap;}
+.fn-desc{color:#6b8080;line-height:1.4;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <h1>EZ-DSNER</h1>
+        <p class="header-sub">End-to-end dictionary/KB-based distant annotation tool</p>
+      </div>
+      <div class="header-controls">
+        <button onclick="toggleDarkMode()" class="header-btn" id="dark-mode-btn" title="Toggle dark mode">🌙 Dark</button>
+        <button onclick="toggleA11yPanel()" class="header-btn" id="a11y-btn" title="Accessibility options">Accessibility</button>
+        <button onclick="handleReset()" class="header-btn" title="Reset application">🔄 Reset</button>
+      </div>
+    </div>
+    <div class="a11y-panel" id="a11y-panel">
+      <h3>Accessibility Options</h3>
+      <label class="a11y-option"><input type="checkbox" id="a11y-large" onchange="toggleA11y('a11y-large-text', this.checked)"/> Larger Text</label>
+      <label class="a11y-option"><input type="checkbox" id="a11y-contrast" onchange="toggleA11y('a11y-high-contrast', this.checked)"/> High Contrast</label>
+      <label class="a11y-option"><input type="checkbox" id="a11y-dyslexia" onchange="toggleA11y('a11y-dyslexia', this.checked)"/> Dyslexia-Friendly Font</label>
+      <label class="a11y-option"><input type="checkbox" id="a11y-motion" onchange="toggleA11y('a11y-reduced-motion', this.checked)"/> Reduced Motion</label>
+    </div>
+    <div class="pipeline-label">Pipeline</div>
+    <div class="pipeline-steps">
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Text Input</span>
+      <span class="ps-arrow">›</span>
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Dict / KB Match</span>
+      <span class="ps-arrow">›</span>
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Distant Label</span>
+      <span class="ps-arrow">›</span>
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Output Text</span>
+    </div>
+  </div>
+</header>
+
+<div class="main" id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+const state = {
+  pmid: '',
+  article: null,
+  conll: '',
+  dictionary: ``,
+  defaultDictionary: '', // Will be loaded from server
+  selectedModel: 'dictionary',
+  entities: [],          // set after dict match — used for training input
+  predictedEntities: [], // set after predict — drives annotated abstract
+  biocXml: '',
+  pipelineSteps: { fetch:null, conll:null, dict:null, predict:null, bioc:null }
+};
+
+const MODELS = [
+  {id:'dictionary', name:'Dictionary/KB-Matching', desc:'Dictionary based lookup'},
+];
+
+// ML methods available via Jupyter notebook (not in this web app)
+const ML_METHODS = [
+  {id:'cupul',  name:'CuPUL',  desc:'Curriculum learning and Positive-Unlabeled (PU) learning — uses curriculum-based training to progressively learn from noisy distant labels, combined with PU learning to handle unannotated entities.'},
+  {id:'bond',   name:'BOND',   desc:'BERT-Assisted Open-Domain Named Entity Recognition with Distant Supervision — leverages BERT to perform NER in open-domain settings using only distant supervision, with a self-training framework to refine noisy labels.'},
+  {id:'roster', name:'RoSTER', desc:'Robust learning and Self-Training for distantly-supervised Entity Recognition — employs noise-robust learning to handle label noise from distant supervision and iteratively self-trains for improved performance.'},
+  {id:'scdl',   name:'SCDL',   desc:'Self-Collaborative Denoising Learning — uses collaborative training between multiple models to jointly denoise distant labels, improving entity recognition accuracy.'},
+  {id:'atsen',  name:'ATSEN',  desc:'Adaptive Teacher Learning and Fine-grained Student ENsemble — pairs an adaptive teacher model that provides refined pseudo-labels with a fine-grained student ensemble for robust distantly-supervised NER.'},
+];
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+function tokenize(text) {
+  return text.match(/\w+(?:[-']\w+)*|[^\w\s]/g) || [];
+}
+
+function buildConll(article) {
+  const titleTokens = tokenize(article.title);
+  const absTokens   = tokenize(article.abstract);
+  let lines = titleTokens.map(t => `${t}  O  0`).join('\n') + '\n\n';
+  lines    += absTokens.map(t => `${t}  O  0`).join('\n') + '\n';
+  return lines;
+}
+
+function applyDictionary(conll, dictText) {
+  const terms = dictText.split('\n')
+    .map(l => l.trim().toLowerCase())
+    .filter(Boolean)
+    .sort((a,b) => b.length - a.length); // longest first
+
+  const sentences = conll.trim().split('\n\n');
+  const entities = [];
+  let newConll = '';
+
+  sentences.forEach(sent => {
+    const lines = sent.trim().split('\n').filter(Boolean);
+    const tokens = lines.map(l => l.split('  ')[0]);
+    const tokensLower = tokens.map(t => t.toLowerCase());
+    const labels = new Array(tokens.length).fill(0);
+
+    let i = 0;
+    while (i < tokensLower.length) {
+      let matched = false;
+      for (const term of terms) {
+        const termToks = term.split(/\s+/);
+        const end = i + termToks.length;
+        const slice = tokensLower.slice(i, end);
+        if (slice.join(' ') === termToks.join(' ')) {
+          for (let k = i; k < end; k++) labels[k] = 1;
+          entities.push({ text: tokens.slice(i,end).join(' '), start:i, len:termToks.length });
+          i = end; matched = true; break;
+        }
+      }
+      if (!matched) i++;
+    }
+    newConll += tokens.map((t,j) => `${t}  O  ${labels[j]}`).join('\n') + '\n\n';
+  });
+
+  return { conll: newConll, entities };
+}
+
+function buildBioC(article, entities) {
+  const today = new Date().toISOString().split('T')[0];
+  const passageOffset = article.title.length + 1; // abstract starts after title + separator
+  const anns = entities.map((e,i) => `        <annotation id="${i}">
+          <infon key="type">Trait</infon>
+          <location offset="${e.offset + passageOffset}" length="${e.text.length}"/>
+          <text>${e.text}</text>
+        </annotation>`).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE collection SYSTEM "BioC.dtd">
+<collection>
+  <source>TraitNER</source>
+  <date>${today}</date>
+  <key>TraitsBatch</key>
+  <version>2.0</version>
+  <document>
+    <id>${article.pmid}</id>
+    <infons>
+      <infon key="source">TraitNER</infon>
+      <infon key="pmid">${article.pmid}</infon>
+    </infons>
+    <passage>
+      <infon key="type">title</infon>
+      <offset>0</offset>
+      <text>${article.title}</text>
+    </passage>
+    <passage>
+      <infon key="type">abstract</infon>
+      <offset>${article.title.length + 1}</offset>
+      <text>${article.abstract}</text>
+${anns}
+    </passage>
+  </document>
+</collection>`;
+}
+
+function syntaxHighlightXML(xml) {
+  return xml
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(&lt;\/?[\w:.-]+)/g,'<span class="xml-tag">$1</span>')
+    .replace(/(&gt;)/g,'<span class="xml-tag">$1</span>')
+    .replace(/([\w:-]+=)/g,'<span class="xml-attr">$1</span>')
+    .replace(/(&quot;[^&]*&quot;|"[^"]*")/g,'<span class="xml-val">$1</span>');
+}
+
+function stepClass(v) {
+  if (v === null) return '';
+  if (v === 'run') return 'running';
+  if (v === 'ok')  return 'done';
+  if (v === 'err') return 'error';
+  return '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  ACTIONS
+// ═══════════════════════════════════════════════════════
+async function fetchAbstract() {
+  const pmid = state.pmid.trim();
+  if (!pmid || !/^\d+$/.test(pmid)) { 
+    setStatus('fetch-status','error','Please enter a valid numeric PMID'); 
+    return; 
+  }
+
+  setStep('fetch','run'); 
+  setStatus('fetch-status','info','Fetching from PubMed E-utilities...');
+  render();
+  
+  try {
+    // Direct PubMed E-utilities call (no Flask needed)
+    const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmid}&retmode=xml&rettype=abstract`;
+    const res = await fetch(url);
+    const text = await res.text();
+    
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/xml');
+    const titleEl = doc.querySelector('ArticleTitle');
+    const absEl = doc.querySelector('AbstractText');
+    
+    if (!titleEl || !absEl) {
+      throw new Error('No abstract found for this PMID');
+    }
+    
+    state.article = { 
+      pmid, 
+      title: titleEl.textContent.trim(), 
+      abstract: absEl.textContent.trim() 
+    };
+    
+    setStep('fetch','ok');
+    setStatus('fetch-status','ok', `✓ Fetched — ${state.article.title.substring(0,60)}...`);
+    render();
+  } catch(e) {
+    // Demo fallback
+    state.article = {
+      pmid,
+      title: `Demo: Genetic mapping of grain yield and plant height QTLs in maize`,
+      abstract: `Grain yield, plant height, leaf area, and drought tolerance are important crop traits in maize. Flowering time and anthesis date were measured across environments. Yield QTLs were detected on chromosomes 1 and 3. Seed weight and biomass showed high heritability. Disease resistance and protein content were also evaluated.`
+    };
+    setStep('fetch','ok');
+    setStatus('fetch-status','warn',`⚠ PubMed unreachable — loaded demo abstract for PMID ${pmid}`);
+    render();
+  }
+}
+
+function generateConll() {
+  if (!state.article) { setStatus('conll-status','error','Fetch an abstract first'); return; }
+  state.conll = buildConll(state.article);
+  setStep('conll','ok');
+  setStatus('conll-status','ok','✓ CoNLL file generated');
+  render();
+}
+
+function runDictMatch() {
+  console.log('runDictMatch called');
+  
+  // Auto-generate CoNLL if it doesn't exist
+  if (!state.conll && state.article) {
+    console.log('Auto-generating CoNLL...');
+    state.conll = buildConll(state.article);
+    setStep('conll','ok');
+  }
+  
+  if (!state.conll) { 
+    setStatus('dict-status','error','Fetch an abstract first'); 
+    render();
+    return; 
+  }
+  
+  setStatus('dict-status','info','Running dictionary matching...');
+  render();
+  
+  // Local dictionary matching (no Flask needed)
+  try {
+    console.log('Dictionary:', state.dictionary.substring(0, 50));
+    
+    const terms = state.dictionary.split('\n')
+      .map(l => l.trim().toLowerCase())
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length); // Longest first
+    
+    console.log('Terms parsed:', terms.length);
+    
+    const abstract = state.article.abstract;
+    const tokens = _tokenize(abstract);
+    const tokensLower = tokens.map(t => t.toLowerCase());
+    
+    console.log('Tokens:', tokens.length);
+    
+    // Greedy multi-token matching
+    const entities = [];
+    const charMap = []; // Map token index → char offset in original text
+    
+    // Build precise character offset map by walking through original text
+    let searchFrom = 0;
+    for (const token of tokens) {
+      const idx = abstract.indexOf(token, searchFrom);
+      if (idx >= 0) {
+        charMap.push(idx);
+        searchFrom = idx + token.length;
+      } else {
+        // Fallback: try case-insensitive search
+        const idxLower = abstract.toLowerCase().indexOf(token.toLowerCase(), searchFrom);
+        if (idxLower >= 0) {
+          charMap.push(idxLower);
+          searchFrom = idxLower + token.length;
+        } else {
+          charMap.push(searchFrom);
+          searchFrom += token.length;
+        }
+      }
+    }
+    
+    let i = 0;
+    while (i < tokensLower.length) {
+      let matched = false;
+      for (const term of terms) {
+        const termTokens = term.split(/\s+/);
+        const end = i + termTokens.length;
+        if (tokensLower.slice(i, end).join(' ') === termTokens.join(' ')) {
+          const startOffset = charMap[i];
+          const lastTokenEnd = charMap[end - 1] + tokens[end - 1].length;
+          const entityText = abstract.substring(startOffset, lastTokenEnd);
+          entities.push({
+            text: entityText,
+            offset: startOffset
+          });
+          i = end;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) i++;
+    }
+    
+    console.log('Entities found:', entities.length);
+    
+    state.entities = entities;
+    state.predictedEntities = []; // Reset — predict must be re-run
+    setStep('dict','ok');
+    setStatus('dict-status','ok', `✓ Dictionary matching complete — ${entities.length} candidate(s) found`);
+    render();
+  } catch(e) {
+    console.error('Dict match error:', e);
+    setStatus('dict-status','error', `⚠ Error: ${e.message}`);
+    render();
+  }
+}
+
+async function loadDefaultDictionary() {
+  console.log('Loading default dictionary...');
+  setStatus('dict-status','info','Loading default dictionary...');
+  render();
+  
+  const defaultDict = `shattering\nreaction to Xanthomonas campestris pv phaseoli infection\nabnormal seedling\nadventitious roots\nadventitious Shoots\nreaction to Alfalfa Mosaic Virus Infection (AMV)\nreaction to Alternaria alternata infection\naluminum Tolerance\nantibiosis\nantixenosis\nreaction to Pseudomonas syringae infection\nwater Use Efficiency\nreaction to Bean Yellow Mosaic Virus Infection (BYMV)\nreaction to Colaspis brunnea\nR5 Beginning Seed\nbrachytic Stem\nMSNN`;
+  
+  state.dictionary = defaultDict;
+  state.defaultDictionary = defaultDict;
+  setStatus('dict-status','ok','✓ Loaded built-in default dictionary');
+  render();
+}
+
+function resetApp() {
+  console.log('Resetting app...');
+  
+  // Load default dictionary first
+  const defaultDict = `shattering\nreaction to Xanthomonas campestris pv phaseoli infection\nabnormal seedling\nadventitious roots\nadventitious Shoots\nreaction to Alfalfa Mosaic Virus Infection (AMV)\nreaction to Alternaria alternata infection\naluminum Tolerance\nantibiosis\nantixenosis\nreaction to Pseudomonas syringae infection\nwater Use Efficiency\nreaction to Bean Yellow Mosaic Virus Infection (BYMV)\nreaction to Colaspis brunnea\nR5 Beginning Seed\nbrachytic Stem\nMSNN`;
+  
+  // Reset all state
+  state.pmid = '';
+  state.article = null;
+  state.conll = '';
+  state.dictionary = state.defaultDictionary || defaultDict;
+  state.selectedModel = 'dictionary';
+  state.entities = [];
+  state.predictedEntities = [];
+  state.biocXml = '';
+  state.pipelineSteps = { fetch:null, conll:null, dict:null, predict:null, bioc:null };
+  
+  // Clear all status messages
+  for (let key in statusStore) {
+    delete statusStore[key];
+  }
+  
+  // Re-render
+  render();
+}
+
+function openJupyterNotebook() {
+  console.log('Opening Jupyter notebook...');
+  window.open('dsner_jupyter.ipynb', '_blank');
+}
+
+async function runPredict() {
+  if (state.pipelineSteps.dict !== 'ok') { 
+    setStatus('predict-status','error','Run dictionary matching first'); 
+    render();
+    return; 
+  }
+  
+  // Dictionary/KB matching — all done client-side
+  state.predictedEntities = [...state.entities];
+  setStep('predict','ok');
+  if (state.predictedEntities.length > 0) {
+    setStatus('predict-status','ok',`✓ Distant labelling complete — ${state.predictedEntities.length} term(s) labelled`);
+  } else {
+    setStatus('predict-status','warn',`⚠ No matches found — 0 terms labelled. Consider expanding your dictionary.`);
+  }
+  render();
+}
+
+async function generateBioC() {
+  if (state.pipelineSteps.predict !== 'ok') { setStatus('bioc-status','error','Run dictionary matching and predict first'); render(); return; }
+  
+  setStatus('bioc-status','info','Generating BioC XML...');
+  render();
+  
+  try {
+    state.biocXml = buildBioC(state.article, state.predictedEntities);
+    setStep('bioc','ok');
+    setStatus('bioc-status','ok','✓ BioC XML ready — TeamTat compatible');
+    render();
+  } catch(e) {
+    setStatus('bioc-status','error', `⚠ ${e.message}`);
+    render();
+  }
+}
+
+function copyXML() {
+  navigator.clipboard.writeText(state.biocXml).then(() => {
+    setStatus('bioc-status','ok','✓ Copied to clipboard!'); render();
+  });
+}
+
+function downloadXML() {
+  const blob = new Blob([state.biocXml], {type:'text/xml'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TraitNER_${state.article?.pmid || 'output'}.xml`;
+  a.click();
+}
+
+function buildLabelledConll() {
+  if (!state.article) return '';
+  const text = state.article.title + '\n\n' + state.article.abstract;
+  const sentences = text.split('\n\n');
+  let result = '';
+  
+  for (const sent of sentences) {
+    const tokens = _tokenize(sent);
+    const tokensLower = tokens.map(t => t.toLowerCase());
+    const terms = state.dictionary.split('\n')
+      .map(l => l.trim().toLowerCase())
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+    
+    const labels = new Array(tokens.length).fill('O');
+    let i = 0;
+    while (i < tokensLower.length) {
+      let matched = false;
+      for (const term of terms) {
+        const termToks = term.split(/\s+/);
+        const end = i + termToks.length;
+        if (tokensLower.slice(i, end).join(' ') === termToks.join(' ')) {
+          labels[i] = 'B-Trait';
+          for (let k = i + 1; k < end; k++) labels[k] = 'I-Trait';
+          i = end; matched = true; break;
+        }
+      }
+      if (!matched) i++;
+    }
+    result += tokens.map((t, j) => `${t}\t${labels[j]}`).join('\n') + '\n\n';
+  }
+  return result.trim();
+}
+
+function downloadCoNLL() {
+  const conll = buildLabelledConll();
+  if (!conll) { setStatus('bioc-status','error','No data to export'); render(); return; }
+  const blob = new Blob([conll], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TraitNER_${state.article?.pmid || 'output'}.conll`;
+  a.click();
+  setStatus('bioc-status','ok','✓ CoNLL file downloaded');
+  render();
+}
+
+function downloadLabelledText() {
+  if (!state.article) { setStatus('bioc-status','error','No data to export'); render(); return; }
+  
+  let output = `PMID: ${state.article.pmid}\n`;
+  output += `Title: ${state.article.title}\n\n`;
+  output += `Abstract:\n${state.article.abstract}\n\n`;
+  output += `--- Distant Labels (Dictionary/KB Matching) ---\n`;
+  output += `Total entities found: ${state.predictedEntities.length}\n\n`;
+  
+  if (state.predictedEntities.length > 0) {
+    state.predictedEntities.forEach((e, i) => {
+      output += `${i + 1}. "${e.text}" (offset: ${e.offset}, type: Term)\n`;
+    });
+  } else {
+    output += 'No entities matched.\n';
+  }
+  
+  const blob = new Blob([output], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TraitNER_${state.article?.pmid || 'output'}_labelled.txt`;
+  a.click();
+  setStatus('bioc-status','ok','✓ Text file downloaded');
+  render();
+}
+
+function handleFileUpload() {
+  const fileInput = document.getElementById('file-upload');
+  const file = fileInput.files[0];
+  
+  if (!file) {
+    setStatus('fetch-status','error','Please select a .txt file');
+    render();
+    return;
+  }
+  
+  if (!file.name.endsWith('.txt')) {
+    setStatus('fetch-status','error','Only .txt files are supported');
+    render();
+    return;
+  }
+  
+  setStatus('fetch-status','info','Reading uploaded file...');
+  render();
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result.trim();
+    
+    // Parse the text - assume first line is title, rest is abstract
+    const lines = text.split('\n').filter(l => l.trim());
+    const title = lines[0] || 'Uploaded Abstract';
+    const abstract = lines.slice(1).join(' ').trim() || lines[0] || text;
+    
+    state.article = {
+      pmid: file.name.replace('.txt', ''),
+      title: title,
+      abstract: abstract
+    };
+    state.pmid = state.article.pmid;
+    
+    setStep('fetch','ok');
+    setStatus('fetch-status','ok',`✓ Uploaded — ${file.name}`);
+    render();
+  };
+  
+  reader.onerror = function() {
+    setStatus('fetch-status','error','Failed to read file');
+    render();
+  };
+  
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DOM HELPERS
+// ═══════════════════════════════════════════════════════
+const statusStore = {};
+function setStatus(id, type, msg) { statusStore[id] = {type, msg}; }
+function setStep(key, val) { state.pipelineSteps[key] = val; }
+
+function renderStatus(id) {
+  const s = statusStore[id];
+  if (!s) return '';
+  const map = {ok:'status-ok',error:'status-err',info:'status-info',warn:'status-warn'};
+  return `<div class="status-bar ${map[s.type]||'status-info'}">${s.type==='info'?'<span class="spin"></span>':''}${s.msg}</div>`;
+}
+
+function renderAnnotatedText() {
+  // Only populated after Predict — reads from pred_<pmid>.txt (simulated).
+  // Uses a character-offset approach: split abstract into plain segments and
+  // annotated spans so the HTML is built once — no regex-on-HTML looping.
+  if (!state.article) return '';
+  if (!state.predictedEntities.length) return escapeHtml(state.article.abstract);
+
+  const text = state.article.abstract;
+
+  // Build a sorted, non-overlapping list of match ranges
+  const ranges = [];
+  const termsSorted = [...state.predictedEntities].sort((a, b) => b.text.length - a.text.length);
+  const occupied = new Array(text.length).fill(false);
+
+  for (const ent of termsSorted) {
+    const needle = ent.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`\\b${needle}\\b`, 'gi');
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const start = m.index;
+      const end   = m.index + m[0].length;
+      // skip if any character in this range is already claimed
+      if (occupied.slice(start, end).some(Boolean)) continue;
+      for (let i = start; i < end; i++) occupied[i] = true;
+      ranges.push({ start, end, text: m[0] });
+    }
+  }
+
+  // Sort ranges by start position, then build HTML from plain segments
+  ranges.sort((a, b) => a.start - b.start);
+  let html = '';
+  let cursor = 0;
+  for (const r of ranges) {
+    if (r.start > cursor) html += escapeHtml(text.slice(cursor, r.start));
+    html += `<span class="ent ent-trait" title="Term">${escapeHtml(r.text)}</span>`;
+    cursor = r.end;
+  }
+  if (cursor < text.length) html += escapeHtml(text.slice(cursor));
+  return html;
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function _tokenize(text) {
+  // Tokenize text (same as backend logic)
+  return text.match(/\w+(?:[-']\w+)*|[^\w\s]/g) || [];
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+function render() {
+  const S = state;
+  const P = S.pipelineSteps;
+
+  const modelDataset = S.selectedModel.charAt(0).toUpperCase() + S.selectedModel.slice(1);
+
+  document.getElementById('app').innerHTML = `
+
+<!-- PIPELINE TRACK -->
+<div class="pipeline-track">
+  <div class="track-step ${stepClass(P.fetch)}">1. Text Input</div>
+  <div class="track-step ${stepClass(P.conll)}">2. CoNLL</div>
+  <div class="track-step ${stepClass(P.dict)}">3. Dict Match</div>
+  <div class="track-step ${stepClass(P.predict)}">4. Distant Label</div>
+  <div class="track-step ${stepClass(P.bioc)}">5. Output</div>
+  <div class="track-step ${S.predictedEntities.length ? 'done' : ''}">6. Labelled</div>
+</div>
+
+<!-- ROW 1: Fetch + Dict + Model + BioC XML (4 columns) -->
+<div class="grid-4">
+
+  <!-- STEP 1: PubMed -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-fetch">1</span>
+      <div><div class="card-title">Text Input</div></div>
+    </div>
+    <label>PMID</label>
+    <input id="pmid-input" type="text" value="${S.pmid}" placeholder="e.g. 33957189" style="margin-bottom:.8rem"/>
+    <div class="btn-row" style="margin-top:0;margin-bottom:.8rem;">
+      <button class="btn btn-slate" onclick="handleFetch()">Fetch Abstract</button>
+      <button class="btn btn-ghost" onclick="handleConll()" ${!S.article?'disabled':''}>→ CoNLL</button>
+    </div>
+    <div style="text-align:center;color:var(--rule);font-size:.75rem;margin:.5rem 0;text-transform:uppercase;letter-spacing:.1em;">or</div>
+    <label>Upload Abstract (.txt)</label>
+    <input type="file" id="file-upload" accept=".txt" style="margin-bottom:.5rem;font-size:.85rem;padding:.4rem .6rem;"/>
+    <button class="btn btn-amber" onclick="handleFileUpload()" style="width:100%;">Upload Text File</button>
+    ${renderStatus('fetch-status')}
+    ${renderStatus('conll-status')}
+    ${S.article ? `
+    <div class="abstract-box">
+      <div class="abstract-title" id="abs-title"></div>
+      <div class="abstract-body" id="abs-body"></div>
+    </div>` : ''}
+    ${S.conll ? `
+    <div class="conll-box">${S.conll.split('\n').slice(0,14).join('\n')}<span style="color:#4a5a50">\n…</span></div>` : ''}
+  </div>
+
+  <!-- STEP 2: Dictionary -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-dict">2</span>
+      <div><div class="card-title">Dictionary</div></div>
+    </div>
+    <label>Upload Dictionary (.txt)</label>
+    <input type="file" id="dict-file-upload" accept=".txt" style="margin-bottom:.6rem;font-size:.85rem;padding:.4rem .6rem;"/>
+    <button class="btn btn-amber" onclick="handleDictUpload()" style="width:100%;margin-bottom:.8rem;">Upload Dictionary</button>
+    <label>Terms (one per line)</label>
+    <textarea id="dict-input">${S.dictionary}</textarea>
+    <p class="input-hint">One term per line — edit manually or upload a .txt file above</p>
+    <div class="btn-row">
+      <button class="btn btn-amber" onclick="handleDictMatch()" ${!S.article?'disabled':''}>Apply Dict Match</button>
+      <button class="btn btn-ghost" onclick="handleLoadDict()">Load Default</button>
+    </div>
+    ${renderStatus('dict-status')}
+    ${S.entities.length ? `
+    <div class="stats-row" style="margin-top:.9rem">
+      <div class="stat"><div class="stat-n">${S.entities.length}</div><div class="stat-l">Entities</div></div>
+      <div class="stat"><div class="stat-n">${S.dictionary.split('\n').filter(l=>l.trim()).length}</div><div class="stat-l">Dict Terms</div></div>
+    </div>` : ''}
+  </div>
+
+  <!-- STEP 3: ML Methods (Jupyter) -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-model">3</span>
+      <div><div class="card-title">Distant Labels</div></div>
+    </div>
+    <p style="font-size:.88rem;color:#5a6a70;line-height:1.6;margin-bottom:.8rem;">
+      This web app performs <strong>Dictionary/KB matching</strong> for distant labelling. For advanced ML-based DS-NER methods, use the provided Jupyter Notebook:
+    </p>
+    <div style="background:#fafaf8;border:1.5px solid var(--rule);border-radius:3px;padding:.7rem .9rem;max-height:230px;overflow-y:auto;margin-bottom:.8rem;">
+      ${ML_METHODS.map(m => `
+      <div style="padding:.5rem 0;border-bottom:1px solid var(--cream);">
+        <div style="font-size:.88rem;font-weight:700;color:var(--sage);">${m.name}</div>
+        <div style="font-size:.78rem;color:#7a8a80;line-height:1.5;margin-top:.15rem;">${m.desc}</div>
+      </div>`).join('')}
+    </div>
+    <div class="btn-row" style="margin-top:.6rem;">
+      <button class="btn btn-sage" onclick="handlePredict()" ${P.dict!=='ok'?'disabled':''}>Apply Distant Labels</button>
+      <button class="btn btn-amber" onclick="handleJupyter()" title="Open training notebook">📓 Jupyter Notebook</button>
+    </div>
+    ${renderStatus('predict-status')}
+  </div>
+
+  <!-- STEP 4: Output -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-bioc">4</span>
+      <div><div class="card-title">Output</div></div>
+    </div>
+    <div class="btn-row" style="margin-bottom:.8rem">
+      <button class="btn btn-slate" onclick="handleBioC()" ${P.predict!=='ok'?'disabled':''}>Generate BioC XML</button>
+      <button class="btn btn-ghost" onclick="downloadXML()" ${!S.biocXml?'disabled':''}>⬇ BioC XML</button>
+    </div>
+    <div class="btn-row" style="margin-bottom:.8rem;margin-top:0;">
+      <button class="btn btn-amber" onclick="downloadCoNLL()" ${P.predict!=='ok'?'disabled':''}>⬇ CoNLL</button>
+      <button class="btn btn-ghost" onclick="downloadLabelledText()" ${P.predict!=='ok'?'disabled':''}>⬇ Text</button>
+    </div>
+    ${renderStatus('bioc-status')}
+    ${S.biocXml ? `
+    <div class="xml-box">
+      <pre class="xml-code">${syntaxHighlightXML(S.biocXml)}</pre>
+    </div>` : `
+    <div style="padding:2rem;text-align:center;color:#bbb;font-size:.8rem;background:#fafaf8;border:1.5px dashed var(--rule);border-radius:3px;">
+      Run the pipeline to generate outputs
+    </div>`}
+  </div>
+
+</div>
+
+<!-- ROW 2: Dict Match Results + Distantly Labelled Text -->
+<div class="grid-2">
+
+  <!-- Dict Match Results -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-dict">Dict</span>
+      <div>
+        <div class="card-title">Dictionary Match Results</div>
+        <div class="card-sub">Candidate spans — used as distant labels for training</div>
+      </div>
+    </div>
+    ${S.entities.length ? `
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">${S.entities.length}</div><div class="stat-l">Candidates</div></div>
+      <div class="stat"><div class="stat-n">${S.dictionary.split('\n').filter(l=>l.trim()).length}</div><div class="stat-l">Dict Terms</div></div>
+      <div class="stat"><div class="stat-n">${S.article ? S.article.abstract.split(' ').length : 0}</div><div class="stat-l">Tokens</div></div>
+    </div>
+    <div style="margin-top:.9rem;background:#fafaf8;border:1.5px solid var(--rule);border-radius:3px;padding:1rem 1.1rem;max-height:280px;overflow-y:auto;">
+      ${S.entities.map((e,i) => `
+      <div style="display:flex;align-items:baseline;gap:.8rem;padding:.35rem 0;border-bottom:1px solid var(--cream);font-family:var(--body-font);font-size:.9rem;">
+        <span style="color:var(--rule);font-size:.75rem;min-width:24px;">${i+1}.</span>
+        <span style="font-weight:700;color:#3a8fd4;">${escapeHtml(e.text)}</span>
+        <span style="color:var(--rule);font-size:.75rem;margin-left:auto;">offset ${e.offset}</span>
+      </div>`).join('')}
+    </div>` : `
+    <div style="padding:3.5rem;text-align:center;color:#bbb;font-size:.9rem;background:#fafaf8;border:1.5px dashed var(--rule);border-radius:3px;font-family:var(--body-font);">
+      Apply dictionary matching to see candidate spans
+    </div>`}
+  </div>
+
+  <!-- Distantly Labelled Text -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-model">NER</span>
+      <div>
+        <div class="card-title">Distantly Labelled Text</div>
+        <div class="card-sub">Dictionary-annotated abstract · <span style="color:#3a8fd4;font-weight:700;">blue</span> = distant label</div>
+      </div>
+    </div>
+    ${P.predict === 'ok' ? `
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">${S.predictedEntities.length}</div><div class="stat-l">Labelled</div></div>
+      <div class="stat"><div class="stat-n">${S.article ? S.article.abstract.split(' ').length : 0}</div><div class="stat-l">Tokens</div></div>
+    </div>
+    <div class="anno-box" style="line-height:2.2;font-size:1rem;">${renderAnnotatedText()}</div>` : `
+    <div style="padding:3.5rem;text-align:center;color:#bbb;font-size:.9rem;background:#fafaf8;border:1.5px dashed var(--rule);border-radius:3px;font-family:var(--body-font);">
+      Distantly labelled text appears here after clicking Apply Distant Labels
+    </div>`}
+  </div>
+
+</div>
+`;
+
+  // re-bind inputs
+  document.getElementById('pmid-input')?.addEventListener('input', e => { state.pmid = e.target.value; });
+  document.getElementById('dict-input')?.addEventListener('input', e => { state.dictionary = e.target.value; });
+  
+  // Safely set abstract text via textContent (never innerHTML) to avoid injection
+  if (state.article) {
+    const titleEl = document.getElementById('abs-title');
+    const bodyEl  = document.getElementById('abs-body');
+    if (titleEl) titleEl.textContent = state.article.title;
+    if (bodyEl)  bodyEl.textContent  = state.article.abstract; // full text, not truncated
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  EVENT HANDLERS
+// ═══════════════════════════════════════════════════════
+async function handleFetch()         { state.pmid = document.getElementById('pmid-input').value; await fetchAbstract(); }
+function handleConll()               { generateConll(); }
+function handleDictMatch()           { state.dictionary = document.getElementById('dict-input').value; runDictMatch(); }
+function handleModelSelect(id) { 
+  state.selectedModel = id; 
+  render(); 
+}
+async function handlePredict()       { await runPredict(); }
+async function handleBioC()          { await generateBioC(); }
+async function handleLoadDict()      { await loadDefaultDictionary(); }
+function handleReset()               { resetApp(); }
+function handleJupyter()             { openJupyterNotebook(); }
+
+function handleDictUpload() {
+  const fileInput = document.getElementById('dict-file-upload');
+  const file = fileInput.files[0];
+  
+  if (!file) {
+    setStatus('dict-status','error','Please select a .txt dictionary file');
+    render();
+    return;
+  }
+  
+  if (!file.name.endsWith('.txt')) {
+    setStatus('dict-status','error','Only .txt files are supported');
+    render();
+    return;
+  }
+  
+  setStatus('dict-status','info','Reading dictionary file...');
+  render();
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result.trim();
+    const terms = text.split('\n').map(l => l.trim()).filter(Boolean);
+    
+    if (terms.length === 0) {
+      setStatus('dict-status','error','Dictionary file is empty');
+      render();
+      return;
+    }
+    
+    state.dictionary = terms.join('\n');
+    state.entities = []; // Reset entities since dictionary changed
+    state.predictedEntities = [];
+    setStatus('dict-status','ok',`✓ Loaded ${terms.length} terms from ${file.name}`);
+    render();
+  };
+  
+  reader.onerror = function() {
+    setStatus('dict-status','error','Failed to read dictionary file');
+    render();
+  };
+  
+  reader.readAsText(file);
+}
+
+// expose to inline onclick
+window.handleFetch       = handleFetch;
+window.handleFileUpload  = handleFileUpload;
+window.handleConll       = handleConll;
+window.handleDictMatch   = handleDictMatch;
+window.handleDictUpload  = handleDictUpload;
+window.handlePredict     = handlePredict;
+window.handleBioC        = handleBioC;
+window.handleLoadDict    = handleLoadDict;
+window.handleReset       = handleReset;
+window.handleJupyter     = handleJupyter;
+window.copyXML           = copyXML;
+window.downloadXML       = downloadXML;
+window.downloadCoNLL     = downloadCoNLL;
+window.downloadLabelledText = downloadLabelledText;
+
+// ═══════════════════════════════════════════════════════
+//  DARK MODE & ACCESSIBILITY
+// ═══════════════════════════════════════════════════════
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  const btn = document.getElementById('dark-mode-btn');
+  btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  if (isDark) btn.classList.add('active'); else btn.classList.remove('active');
+}
+
+function toggleA11yPanel() {
+  const panel = document.getElementById('a11y-panel');
+  panel.classList.toggle('open');
+  const btn = document.getElementById('a11y-btn');
+  if (panel.classList.contains('open')) btn.classList.add('active'); else btn.classList.remove('active');
+}
+
+function toggleA11y(className, enabled) {
+  if (enabled) {
+    document.body.classList.add(className);
+  } else {
+    document.body.classList.remove(className);
+  }
+}
+
+window.toggleDarkMode  = toggleDarkMode;
+window.toggleA11yPanel = toggleA11yPanel;
+window.toggleA11y      = toggleA11y;
+
+// first render
+render();
+</script>
+</body>
+</html>
