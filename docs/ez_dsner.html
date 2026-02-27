@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EZ-DSNER</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:       #0f1117;
+  --paper:     #f7f4ee;
+  --cream:     #ede9e0;
+  --rule:      #c8c2b4;
+  --sage:      #4a7c59;
+  --sage-lt:   #d4e8db;
+  --amber:     #c47f17;
+  --amber-lt:  #fdf1d6;
+  --crimson:   #a83240;
+  --crimson-lt:#fde8ea;
+  --slate:     #3a4a5c;
+  --slate-lt:  #dde3ec;
+  --blue:      #4a90d9;
+  --blue-dk:   #3570b5;
+  --blue-lt:   #d6e6f7;
+  --blue-shadow: #2c5a8f;
+  --header-bg: #e8e8ec;
+  --header-fg: #1a1a2e;
+  --card-bg:   #fff;
+  --input-bg:  #fafaf8;
+  --body-font: 'Times New Roman', Times, Georgia, 'DejaVu Serif', serif;
+  --serif:     'Playfair Display', 'Times New Roman', Times, Georgia, serif;
+}
+
+/* ── DARK MODE ── */
+body.dark-mode {
+  --paper:     #1a1a2e;
+  --ink:       #e0e0e8;
+  --cream:     #2a2a3e;
+  --rule:      #3a3a50;
+  --header-bg: #12121e;
+  --header-fg: #e0e0e8;
+  --card-bg:   #222236;
+  --input-bg:  #1e1e30;
+  --sage-lt:   #1a3a28;
+  --amber-lt:  #3a2a10;
+  --crimson-lt:#3a1a20;
+  --slate-lt:  #1a2a3a;
+  --blue-lt:   #1a2a4a;
+}
+
+/* ── ACCESSIBILITY: LARGE TEXT ── */
+body.a11y-large-text {
+  font-size: 120%;
+}
+body.a11y-large-text .card-title { font-size: 1.15rem; }
+body.a11y-large-text .card-sub { font-size: .92rem; }
+body.a11y-large-text .btn { font-size: 1.05rem; padding: .65rem 1.3rem; }
+body.a11y-large-text label { font-size: .85rem; }
+body.a11y-large-text input, body.a11y-large-text textarea, body.a11y-large-text select { font-size: 1.1rem; }
+
+/* ── ACCESSIBILITY: HIGH CONTRAST ── */
+body.a11y-high-contrast {
+  --ink: #000;
+  --paper: #fff;
+  --rule: #333;
+  --cream: #ddd;
+  --card-bg: #fff;
+  --input-bg: #fff;
+  --header-bg: #000;
+  --header-fg: #fff;
+}
+body.a11y-high-contrast .card { border-width: 2.5px; border-color: #000; }
+body.a11y-high-contrast .btn { border: 2px solid #000; }
+body.a11y-high-contrast .ent { text-decoration: underline; text-decoration-thickness: 2px; }
+
+/* ── ACCESSIBILITY: DYSLEXIA-FRIENDLY ── */
+body.a11y-dyslexia {
+  --body-font: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+  letter-spacing: 0.05em;
+  word-spacing: 0.15em;
+  line-height: 1.8;
+}
+
+/* ── ACCESSIBILITY: REDUCED MOTION ── */
+body.a11y-reduced-motion, body.a11y-reduced-motion * {
+  animation: none !important;
+  transition: none !important;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:var(--body-font);
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  transition:background .3s,color .3s;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--header-bg);
+  color:var(--header-fg);
+  padding:2.5rem 3rem 2rem;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'';
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 39px,rgba(0,0,0,.03) 39px,rgba(0,0,0,.03) 40px
+  ),repeating-linear-gradient(
+    90deg,transparent,transparent 39px,rgba(0,0,0,.03) 39px,rgba(0,0,0,.03) 40px
+  );
+}
+.header-inner{position:relative;max-width:1400px;margin:0 auto;}
+h1{
+  font-family:var(--serif);font-size:3.4rem;
+  line-height:1.1;font-weight:900;
+  background:linear-gradient(135deg,#1a1a2e 30%,#4a90d9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+body.dark-mode h1{
+  background:linear-gradient(135deg,#e0e0e8 30%,#6ab0f0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.header-sub{
+  margin-top:.6rem;font-size:1rem;color:#6b7280;
+  max-width:600px;line-height:1.6;
+  font-family:'Times New Roman', Times, Georgia, serif;
+}
+body.dark-mode .header-sub{color:#8a8a9e;}
+.pipeline-label{
+  margin-top:1.4rem;font-size:.8rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#6b7a82;
+  font-family:'Times New Roman', Times, Georgia, serif;
+}
+.pipeline-steps{
+  display:flex;align-items:center;gap:0;
+  margin-top:.5rem;flex-wrap:wrap;gap:.3rem;
+}
+.ps{
+  background:rgba(0,0,0,.05);
+  border:1px solid rgba(0,0,0,.1);
+  padding:.25rem .7rem;border-radius:3px;
+  font-size:.8rem;color:#4a5568;
+  display:flex;align-items:center;gap:.35rem;
+  font-family:'Times New Roman', Times, Georgia, serif;
+}
+body.dark-mode .ps{
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.12);
+  color:#9aa0b0;
+}
+.ps-dot{width:6px;height:6px;border-radius:50%;}
+.ps-arrow{color:#9ca3af;font-size:.85rem;}
+
+/* ── HEADER CONTROLS ── */
+.header-controls{
+  display:flex;align-items:center;gap:.5rem;flex-shrink:0;
+}
+.header-btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem .8rem;border:1.5px solid rgba(0,0,0,.15);border-radius:4px;
+  font-family:var(--body-font);font-size:.8rem;font-weight:700;
+  background:rgba(0,0,0,.04);color:var(--header-fg);
+  cursor:pointer;transition:all .2s;
+}
+.header-btn:hover{
+  background:rgba(0,0,0,.08);
+  border-color:rgba(0,0,0,.25);
+  transform:translateY(-1px);
+}
+body.dark-mode .header-btn{
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.06);
+  color:#e0e0e8;
+}
+body.dark-mode .header-btn:hover{
+  background:rgba(255,255,255,.12);
+  border-color:rgba(255,255,255,.35);
+}
+.header-btn.active{
+  background:var(--blue);color:#fff;border-color:var(--blue);
+}
+
+/* ── ACCESSIBILITY PANEL ── */
+.a11y-panel{
+  display:none;
+  background:var(--card-bg);
+  border:1.5px solid var(--rule);
+  border-radius:4px;
+  padding:1rem 1.2rem;
+  margin-top:.8rem;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+.a11y-panel.open{display:block;}
+.a11y-panel h3{
+  font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;
+  color:#6b7a82;margin-bottom:.7rem;font-family:var(--body-font);
+}
+.a11y-option{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.4rem 0;font-size:.88rem;cursor:pointer;
+  font-family:var(--body-font);color:var(--ink);
+}
+.a11y-option input[type="checkbox"]{
+  width:18px;height:18px;cursor:pointer;accent-color:var(--blue);
+}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:1400px;margin:0 auto;padding:2.5rem 3rem;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.grid-full{margin-bottom:1.5rem;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:4px;
+  padding:1.4rem 1.6rem;
+  box-shadow:3px 3px 0 var(--rule);
+  transition:box-shadow .2s,transform .2s;
+}
+.card:hover{box-shadow:5px 5px 0 var(--rule);transform:translate(-1px,-1px);}
+.card-head{
+  display:flex;align-items:center;gap:.7rem;
+  margin-bottom:1.1rem;padding-bottom:.8rem;
+  border-bottom:1px solid var(--cream);
+}
+.step-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:2px;
+  font-size:.75rem;font-weight:700;flex-shrink:0;
+}
+.card-title{font-size:.95rem;font-weight:700;letter-spacing:.01em;font-family:var(--body-font);}
+.card-sub{font-size:.78rem;color:#8a8a8a;margin-top:.15rem;font-family:var(--body-font);}
+
+/* color themes per step */
+.step-fetch  {background:var(--blue-lt);color:var(--blue);}
+.step-dict   {background:var(--blue-lt);color:var(--blue);}
+.step-model  {background:var(--blue-lt);color:var(--blue);}
+.step-bioc   {background:var(--blue-lt);color:var(--blue);}
+.step-output {background:var(--ink);color:var(--paper);}
+
+/* ── FORM ELEMENTS ── */
+label{
+  display:block;font-size:.72rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:#6b7680;margin-bottom:.35rem;
+  font-family:var(--body-font);
+}
+input,textarea,select{
+  width:100%;font-family:var(--body-font);font-size:.95rem;
+  padding:.55rem .8rem;
+  border:1.5px solid var(--rule);border-radius:3px;
+  background:var(--input-bg);color:var(--ink);
+  transition:border-color .2s,box-shadow .2s;
+  outline:none;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(74,144,217,.15);
+  background:var(--card-bg);
+}
+textarea{resize:vertical;min-height:110px;line-height:1.6;font-size:.9rem;}
+.input-hint{font-size:.75rem;color:#9ca3a8;margin-top:.3rem;font-family:var(--body-font);}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.55rem 1.1rem;border:none;border-radius:3px;
+  font-family:var(--body-font);font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:.01em;
+}
+.btn-reset{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem .8rem;border:1.5px solid rgba(0,0,0,.15);border-radius:4px;
+  font-family:var(--body-font);font-size:.8rem;font-weight:700;
+  background:rgba(0,0,0,.04);color:var(--header-fg);
+  cursor:pointer;transition:all .2s;
+}
+.btn-reset:hover{
+  background:rgba(0,0,0,.08);
+  border-color:rgba(0,0,0,.25);
+  transform:translateY(-1px);
+}
+body.dark-mode .btn-reset{
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.06);
+  color:#e0e0e8;
+}
+.btn-sage{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--blue-shadow);}
+.btn-sage:hover:not(:disabled){background:var(--blue-dk);box-shadow:3px 3px 0 var(--blue-shadow);transform:translate(-1px,-1px);}
+.btn-amber{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--blue-shadow);}
+.btn-amber:hover:not(:disabled){background:var(--blue-dk);box-shadow:3px 3px 0 var(--blue-shadow);transform:translate(-1px,-1px);}
+.btn-slate{background:var(--blue);color:#fff;box-shadow:2px 2px 0 var(--blue-shadow);}
+.btn-slate:hover:not(:disabled){background:var(--blue-dk);box-shadow:3px 3px 0 var(--blue-shadow);transform:translate(-1px,-1px);}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--rule);}
+.btn-ghost:hover:not(:disabled){border-color:var(--blue);color:var(--blue);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+.btn-row{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem;}
+
+/* ── PARAM GRID ── */
+.param-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.param-item label{font-size:.68rem;}
+.param-item input{font-size:.82rem;padding:.4rem .6rem;}
+
+/* ── STATUS BAR ── */
+.status-bar{
+  padding:.6rem 1rem;border-radius:3px;font-size:.88rem;
+  margin-top:.8rem;display:flex;align-items:center;gap:.6rem;
+  font-family:var(--body-font);
+}
+.status-ok  {background:var(--sage-lt); color:var(--sage);  border:1px solid #b8dac0;}
+.status-err {background:var(--crimson-lt);color:var(--crimson);border:1px solid #f0b8be;}
+.status-info{background:var(--slate-lt); color:var(--slate); border:1px solid #c0cad6;}
+.status-warn{background:var(--amber-lt); color:var(--amber); border:1px solid #f0d8a0;}
+
+/* ── ABSTRACT DISPLAY ── */
+.abstract-box{
+  background:var(--input-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:1rem 1.1rem;margin-top:.8rem;
+  max-height:280px;overflow-y:auto;
+}
+.abstract-title{font-weight:700;font-size:.95rem;color:var(--blue);margin-bottom:.5rem;font-family:var(--body-font);}
+.abstract-body{font-size:.88rem;color:var(--ink);opacity:.75;line-height:1.7;font-family:var(--body-font);}
+
+/* ── CONLL PREVIEW ── */
+.conll-box{
+  background:#0f1117;border-radius:3px;
+  padding:.9rem 1.1rem;margin-top:.8rem;
+  max-height:160px;overflow-y:auto;
+  font-size:.75rem;color:#7ab8e8;line-height:1.8;
+  font-family:'Courier New', Courier, monospace;
+}
+
+/* ── PIPELINE STATUS ── */
+/* ── ANNOTATION DISPLAY ── */
+.anno-box{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:1.4rem 1.6rem;line-height:2.2;
+  font-family:var(--body-font);font-size:1.05rem;
+  margin-top:.8rem;color:var(--ink);
+}
+.ent{
+  font-weight:700;
+  color:#3a8fd4;
+  cursor:default;
+}
+.ent-trait{
+  color:#3a8fd4;
+}
+
+/* ── BIOC XML ── */
+.xml-box{
+  background:#0f1117;border-radius:3px;
+  padding:1.1rem 1.3rem;margin-top:.8rem;
+  max-height:340px;overflow-y:auto;position:relative;
+}
+.xml-code{
+  font-family:var(--mono);font-size:.75rem;
+  color:#7ab8e8;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;
+}
+.xml-tag{color:#89cff0;}
+.xml-attr{color:#f4c542;}
+.xml-val{color:#f08080;}
+.xml-comment{color:#6b8080;}
+
+/* ── STATS ROW ── */
+.stats-row{display:flex;gap:1rem;margin:.8rem 0;flex-wrap:wrap;}
+.stat{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:.6rem 1rem;text-align:center;flex:1;min-width:90px;
+  box-shadow:2px 2px 0 var(--rule);
+}
+.stat-n{font-size:1.8rem;font-weight:700;color:var(--blue);font-family:var(--body-font);}
+.stat-l{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#8a8a8a;margin-top:.1rem;font-family:var(--body-font);}
+
+/* ── MANUAL ANNOTATION ── */
+.anno-select-box{
+  background:var(--card-bg);border:1.5px solid var(--rule);border-radius:3px;
+  padding:1.2rem 1.4rem;line-height:2.2;
+  font-family:var(--body-font);font-size:1rem;
+  margin-top:.6rem;color:var(--ink);
+  cursor:text;user-select:text;-webkit-user-select:text;
+}
+.ent-manual{
+  font-weight:700;color:#2ea84e;cursor:default;
+  background:rgba(46,168,78,.1);border-radius:2px;padding:0 2px;
+}
+.manual-tag{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(46,168,78,.1);border:1.5px solid #2ea84e;border-radius:3px;
+  padding:.3rem .6rem;font-size:.82rem;font-weight:700;color:#2ea84e;
+  font-family:var(--body-font);
+}
+.manual-tag-remove{
+  cursor:pointer;font-size:.9rem;color:#a83240;font-weight:700;
+  margin-left:.2rem;line-height:1;
+}
+.manual-tag-remove:hover{color:#ff2040;}
+.manual-tag-adddict{
+  cursor:pointer;font-size:.75rem;color:var(--blue);font-weight:700;
+  margin-left:.1rem;line-height:1;
+  border-left:1px solid rgba(46,168,78,.3);padding-left:.4rem;
+}
+.manual-tag-adddict:hover{color:var(--blue-dk);}
+
+/* ── SPINNER ── */
+.spin{
+  display:inline-block;width:12px;height:12px;
+  border:2px solid currentColor;border-top-color:transparent;
+  border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <h1>EZ-DSNER</h1>
+        <p class="header-sub">End-to-end dictionary/KB-based distant annotation tool</p>
+      </div>
+      <div class="header-controls">
+        <button onclick="toggleDarkMode()" class="header-btn" id="dark-mode-btn" title="Toggle dark mode">🌙 Dark</button>
+        <button onclick="toggleA11yPanel()" class="header-btn" id="a11y-btn" title="Accessibility options">Accessibility</button>
+        <button onclick="handleReset()" class="header-btn" title="Reset application">🔄 Reset</button>
+      </div>
+    </div>
+    <div class="a11y-panel" id="a11y-panel">
+      <h3>Accessibility Options</h3>
+      <label class="a11y-option"><input type="checkbox" id="a11y-large" onchange="toggleA11y('a11y-large-text', this.checked)"/> Larger Text</label>
+      <label class="a11y-option"><input type="checkbox" id="a11y-contrast" onchange="toggleA11y('a11y-high-contrast', this.checked)"/> High Contrast</label>
+      <label class="a11y-option"><input type="checkbox" id="a11y-dyslexia" onchange="toggleA11y('a11y-dyslexia', this.checked)"/> Dyslexia-Friendly Font</label>
+      <label class="a11y-option"><input type="checkbox" id="a11y-motion" onchange="toggleA11y('a11y-reduced-motion', this.checked)"/> Reduced Motion</label>
+    </div>
+    <div class="pipeline-label">Pipeline</div>
+    <div class="pipeline-steps">
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Text Input</span>
+      <span class="ps-arrow">›</span>
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Dictionary Match</span>
+      <span class="ps-arrow">›</span>
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Annotate</span>
+      <span class="ps-arrow">›</span>
+      <span class="ps"><span class="ps-dot" style="background:#4a90d9"></span>Output Text</span>
+    </div>
+  </div>
+</header>
+
+<div class="main" id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+const state = {
+  pmid: '',
+  article: null,
+  conll: '',
+  dictionary: '',
+  defaultDictionary: '',
+  selectedModel: 'dictionary',
+  entities: [],          // set after dict match — used for training input
+  predictedEntities: [], // set after predict — drives annotated abstract
+  biocXml: '',
+  dictLoadedFiles: [],  // track loaded dictionary filenames
+  manualAnnotations: [], // manually annotated terms {text, offset}
+  pipelineSteps: { fetch:null, conll:null, dict:null, predict:null, bioc:null }
+};
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+function tokenize(text) {
+  return text.match(/\w+(?:[-']\w+)*|[^\w\s]/g) || [];
+}
+
+function buildConll(article) {
+  const titleTokens = tokenize(article.title);
+  const absTokens   = tokenize(article.abstract);
+  let lines = titleTokens.map(t => `${t}  O  0`).join('\n') + '\n\n';
+  lines    += absTokens.map(t => `${t}  O  0`).join('\n') + '\n';
+  return lines;
+}
+
+function buildBioC(article, entities) {
+  const today = new Date().toISOString().split('T')[0];
+  const passageOffset = article.title.length + 1; // abstract starts after title + separator
+  
+  // Combine dict entities and manual annotations
+  const allEntities = [];
+  (entities || []).forEach(e => allEntities.push({ ...e, source: 'dictionary' }));
+  (state.manualAnnotations || []).forEach(e => allEntities.push({ ...e, source: 'manual' }));
+  
+  const anns = allEntities.map((e,i) => `        <annotation id="${i}">
+          <infon key="type">Trait</infon>
+          <infon key="source">${e.source}</infon>
+          <location offset="${e.offset + passageOffset}" length="${e.text.length}"/>
+          <text>${e.text}</text>
+        </annotation>`).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE collection SYSTEM "BioC.dtd">
+<collection>
+  <source>TraitNER</source>
+  <date>${today}</date>
+  <key>TraitsBatch</key>
+  <version>2.0</version>
+  <document>
+    <id>${article.pmid}</id>
+    <infons>
+      <infon key="source">TraitNER</infon>
+      <infon key="pmid">${article.pmid}</infon>
+    </infons>
+    <passage>
+      <infon key="type">title</infon>
+      <offset>0</offset>
+      <text>${article.title}</text>
+    </passage>
+    <passage>
+      <infon key="type">abstract</infon>
+      <offset>${article.title.length + 1}</offset>
+      <text>${article.abstract}</text>
+${anns}
+    </passage>
+  </document>
+</collection>`;
+}
+
+function syntaxHighlightXML(xml) {
+  return xml
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(&lt;\/?[\w:.-]+)/g,'<span class="xml-tag">$1</span>')
+    .replace(/(&gt;)/g,'<span class="xml-tag">$1</span>')
+    .replace(/([\w:-]+=)/g,'<span class="xml-attr">$1</span>')
+    .replace(/(&quot;[^&]*&quot;|"[^"]*")/g,'<span class="xml-val">$1</span>');
+}
+
+// ═══════════════════════════════════════════════════════
+//  ACTIONS
+// ═══════════════════════════════════════════════════════
+async function fetchAbstract() {
+  try {
+    const pmid = (state.pmid || '').trim();
+    if (!pmid || !/^\d+$/.test(pmid)) { 
+      setStatus('fetch-status','error','Please enter a valid numeric PMID'); 
+      render();
+      return; 
+    }
+
+    setStep('fetch','run'); 
+    setStatus('fetch-status','info','Fetching from PubMed E-utilities...');
+    render();
+    
+    try {
+      const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmid}&retmode=xml&rettype=abstract`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/xml');
+      
+      // Check for XML parse errors
+      const parseError = doc.querySelector('parsererror');
+      if (parseError) throw new Error('Invalid XML response from PubMed');
+      
+      const titleEl = doc.querySelector('ArticleTitle');
+      const absEl = doc.querySelector('AbstractText');
+      
+      if (!titleEl || !absEl) {
+        throw new Error('No abstract found for this PMID');
+      }
+      
+      const title = (titleEl.textContent || '').trim();
+      const abstract = (absEl.textContent || '').trim();
+      
+      if (!title && !abstract) {
+        throw new Error('Empty title and abstract returned');
+      }
+      
+      state.article = { pmid, title, abstract };
+      
+      setStep('fetch','ok');
+      setStatus('fetch-status','ok', `✓ Fetched — ${title.substring(0,60)}${title.length > 60 ? '...' : ''}`);
+      render();
+    } catch(e) {
+      // Demo fallback
+      state.article = {
+        pmid,
+        title: `Demo: Genetic mapping of grain yield and plant height QTLs in maize`,
+        abstract: `Grain yield, plant height, leaf area, and drought tolerance are important crop traits in maize. Flowering time and anthesis date were measured across environments. Yield QTLs were detected on chromosomes 1 and 3. Seed weight and biomass showed high heritability. Disease resistance and protein content were also evaluated.`
+      };
+      setStep('fetch','ok');
+      setStatus('fetch-status','warn',`⚠ PubMed unreachable — loaded demo abstract for PMID ${pmid}`);
+      render();
+    }
+  } catch(e) {
+    console.error('fetchAbstract error:', e);
+    setStep('fetch','err');
+    setStatus('fetch-status','error',`⚠ Unexpected error: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+function generateConll() {
+  try {
+    if (!state.article) { setStatus('conll-status','error','Fetch an abstract first'); render(); return; }
+    state.conll = buildConll(state.article);
+    setStep('conll','ok');
+    setStatus('conll-status','ok','✓ CoNLL file generated');
+    render();
+  } catch(e) {
+    console.error('generateConll error:', e);
+    setStatus('conll-status','error',`⚠ CoNLL generation failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+function runDictMatch() {
+  console.log('runDictMatch called');
+  
+  try {
+    // Auto-generate CoNLL if it doesn't exist
+    if (!state.conll && state.article) {
+      console.log('Auto-generating CoNLL...');
+      state.conll = buildConll(state.article);
+      setStep('conll','ok');
+    }
+    
+    if (!state.conll) { 
+      setStatus('dict-status','error','Fetch an abstract first'); 
+      render();
+      return; 
+    }
+    
+    if (!state.dictionary || !state.dictionary.trim()) {
+      setStatus('dict-status','error','Dictionary is empty — add terms or upload a dictionary file');
+      render();
+      return;
+    }
+    
+    if (!state.article || !state.article.abstract) {
+      setStatus('dict-status','error','No abstract text available — fetch or upload an abstract first');
+      render();
+      return;
+    }
+    
+    setStatus('dict-status','info','Running dictionary matching...');
+  
+  // Local dictionary matching (no Flask needed)
+  try {
+    console.log('Dictionary:', state.dictionary.substring(0, 50));
+    
+    const terms = state.dictionary.split('\n')
+      .map(l => l.trim().toLowerCase().replace(/^[^\w]+|[^\w]+$/g, ''))
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length); // Longest first
+    
+    console.log('Terms parsed:', terms.length);
+    
+    const abstract = state.article.abstract;
+    const tokens = _tokenize(abstract);
+    const tokensLower = tokens.map(t => t.toLowerCase());
+    
+    console.log('Tokens:', tokens.length);
+    
+    // Greedy multi-token matching
+    const entities = [];
+    const charMap = []; // Map token index → char offset in original text
+    
+    // Build precise character offset map by walking through original text
+    let searchFrom = 0;
+    for (const token of tokens) {
+      const idx = abstract.indexOf(token, searchFrom);
+      if (idx >= 0) {
+        charMap.push(idx);
+        searchFrom = idx + token.length;
+      } else {
+        // Fallback: try case-insensitive search
+        const idxLower = abstract.toLowerCase().indexOf(token.toLowerCase(), searchFrom);
+        if (idxLower >= 0) {
+          charMap.push(idxLower);
+          searchFrom = idxLower + token.length;
+        } else {
+          charMap.push(searchFrom);
+          searchFrom += token.length;
+        }
+      }
+    }
+    
+    let i = 0;
+    while (i < tokensLower.length) {
+      let matched = false;
+      for (const term of terms) {
+        const termTokens = term.split(/\s+/);
+        const end = i + termTokens.length;
+        if (tokensLower.slice(i, end).join(' ') === termTokens.join(' ')) {
+          const startOffset = charMap[i];
+          const lastTokenEnd = charMap[end - 1] + tokens[end - 1].length;
+          const entityText = abstract.substring(startOffset, lastTokenEnd);
+          entities.push({
+            text: entityText,
+            offset: startOffset
+          });
+          i = end;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) i++;
+    }
+    
+    console.log('Entities found:', entities.length);
+    
+    state.entities = entities;
+    state.predictedEntities = [...entities];
+    // Remove manual annotations that are now covered by dictionary matches
+    const matchedTexts = new Set(entities.map(e => e.text.toLowerCase()));
+    state.manualAnnotations = state.manualAnnotations.filter(a => !matchedTexts.has(a.text.toLowerCase()));
+    setStep('dict','ok');
+    setStep('predict','ok');
+    setStatus('dict-status','ok', `✓ Dictionary matching complete — ${entities.length} candidate(s) found`);
+    render();
+  } catch(e) {
+    console.error('Dict match error:', e);
+    setStatus('dict-status','error', `⚠ Error: ${e.message || 'Unknown error'}`);
+    render();
+  }
+  } catch(outerErr) {
+    console.error('runDictMatch unexpected error:', outerErr);
+    setStatus('dict-status','error', `⚠ Unexpected error: ${outerErr.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+function resetApp() {
+  console.log('Resetting app...');
+  
+  // Reset all state
+  state.pmid = '';
+  state.article = null;
+  state.conll = '';
+  state.dictionary = '';
+  state.selectedModel = 'dictionary';
+  state.entities = [];
+  state.predictedEntities = [];
+  state.dictLoadedFiles = [];
+  state.manualAnnotations = [];
+  state.biocXml = '';
+  state.pipelineSteps = { fetch:null, conll:null, dict:null, predict:null, bioc:null };
+  
+  // Clear all status messages
+  for (let key in statusStore) {
+    delete statusStore[key];
+  }
+  
+  // Re-render
+  render();
+}
+
+async function generateBioC() {
+  if (!state.article) { setStatus('bioc-status','error','Fetch an abstract first'); render(); return; }
+  
+  setStatus('bioc-status','info','Generating BioC XML...');
+  render();
+  
+  try {
+    state.biocXml = buildBioC(state.article, state.predictedEntities);
+    setStep('bioc','ok');
+    setStatus('bioc-status','ok','✓ BioC XML ready — TeamTat compatible');
+    render();
+  } catch(e) {
+    setStatus('bioc-status','error', `⚠ ${e.message}`);
+    render();
+  }
+}
+
+function downloadXML() {
+  try {
+    if (!state.biocXml) { setStatus('bioc-status','error','No BioC XML to download — generate it first'); render(); return; }
+    const blob = new Blob([state.biocXml], {type:'text/xml'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `TraitNER_${state.article?.pmid || 'output'}.xml`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus('bioc-status','ok','✓ BioC XML downloaded'); render();
+  } catch(e) {
+    console.error('downloadXML error:', e);
+    setStatus('bioc-status','error',`⚠ Download failed: ${e.message || 'Unknown error'}`); render();
+  }
+}
+
+function buildLabelledConll() {
+  if (!state.article) return '';
+  try {
+    const text = state.article.title + '\n\n' + state.article.abstract;
+    const sentences = text.split('\n\n');
+    let result = '';
+    
+    // Combine dict terms and manual annotation terms
+    const dictTerms = (state.dictionary || '').split('\n')
+      .map(l => l.trim().toLowerCase())
+      .filter(Boolean);
+    const manualTerms = (state.manualAnnotations || [])
+      .map(a => a.text.trim().toLowerCase())
+      .filter(Boolean);
+    const allTerms = [...new Set([...dictTerms, ...manualTerms])]
+      .sort((a, b) => b.length - a.length);
+    
+    for (const sent of sentences) {
+      const tokens = _tokenize(sent);
+      if (!tokens || tokens.length === 0) continue;
+      const tokensLower = tokens.map(t => t.toLowerCase());
+      
+      const labels = new Array(tokens.length).fill('O');
+      let i = 0;
+      while (i < tokensLower.length) {
+        let matched = false;
+        for (const term of allTerms) {
+          const termToks = term.split(/\s+/);
+          const end = i + termToks.length;
+          if (end <= tokensLower.length && tokensLower.slice(i, end).join(' ') === termToks.join(' ')) {
+            labels[i] = 'B-Trait';
+            for (let k = i + 1; k < end; k++) labels[k] = 'I-Trait';
+            i = end; matched = true; break;
+          }
+        }
+        if (!matched) i++;
+      }
+      result += tokens.map((t, j) => `${t}\t${labels[j]}`).join('\n') + '\n\n';
+    }
+    return result.trim();
+  } catch(e) {
+    console.error('buildLabelledConll error:', e);
+    return '';
+  }
+}
+
+function downloadCoNLL() {
+  try {
+    if (!state.article) { setStatus('bioc-status','error','No data to export — run the pipeline first'); render(); return; }
+    const conll = buildLabelledConll();
+    if (!conll) { setStatus('bioc-status','error','No data to export — CoNLL generation failed'); render(); return; }
+    const blob = new Blob([conll], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `TraitNER_${state.article?.pmid || 'output'}.conll`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus('bioc-status','ok','✓ CoNLL file downloaded');
+    render();
+  } catch(e) {
+    console.error('downloadCoNLL error:', e);
+    setStatus('bioc-status','error',`⚠ Download failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+function downloadLabelledText() {
+  try {
+    if (!state.article) { setStatus('bioc-status','error','No data to export — run the pipeline first'); render(); return; }
+    
+    let output = `PMID: ${state.article.pmid || 'unknown'}\n`;
+    output += `Title: ${state.article.title || 'untitled'}\n\n`;
+    output += `Abstract:\n${state.article.abstract || ''}\n\n`;
+    output += `--- Distant Labels (Dictionary/KB Matching) ---\n`;
+    output += `Total entities found: ${(state.predictedEntities || []).length + (state.manualAnnotations || []).length}\n\n`;
+    
+    if (state.predictedEntities && state.predictedEntities.length > 0) {
+      output += `Dictionary matches:\n`;
+      state.predictedEntities.forEach((e, i) => {
+        output += `  ${i + 1}. "${e.text || ''}" (offset: ${e.offset || 0}, type: Term, source: dictionary)\n`;
+      });
+    }
+    
+    if (state.manualAnnotations && state.manualAnnotations.length > 0) {
+      output += `\nManual annotations:\n`;
+      state.manualAnnotations.forEach((e, i) => {
+        output += `  ${i + 1}. "${e.text || ''}" (offset: ${e.offset || 0}, type: Term, source: manual)\n`;
+      });
+    }
+    
+    if ((!state.predictedEntities || !state.predictedEntities.length) && (!state.manualAnnotations || !state.manualAnnotations.length)) {
+      output += 'No entities matched.\n';
+    }
+    
+    const blob = new Blob([output], {type:'text/plain'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `TraitNER_${state.article?.pmid || 'output'}_labelled.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus('bioc-status','ok','✓ Text file downloaded');
+    render();
+  } catch(e) {
+    console.error('downloadLabelledText error:', e);
+    setStatus('bioc-status','error',`⚠ Download failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+// Helper: save with native OS file picker (fallback to download)
+async function saveWithPicker(content, suggestedName, mimeType, fileTypes) {
+  try {
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: suggestedName,
+          types: fileTypes || [{ description: 'File', accept: { [mimeType]: ['.' + suggestedName.split('.').pop()] } }]
+        });
+        const writable = await handle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        return handle.name;
+      } catch (e) {
+        if (e.name === 'AbortError') return null; // user cancelled
+        console.warn('showSaveFilePicker failed, falling back to download:', e);
+        // Fall through to legacy download
+      }
+    }
+    // Fallback for browsers without File System Access API
+    const blob = new Blob([content], { type: mimeType });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = suggestedName;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    return suggestedName;
+  } catch(e) {
+    console.error('saveWithPicker error:', e);
+    return null;
+  }
+}
+
+async function saveAs() {
+  if (!state.article) { setStatus('bioc-status','error','No data to export'); render(); return; }
+  
+  const formats = [
+    { ext: 'conll', label: 'CoNLL (.conll)', mime: 'text/plain', content: () => buildLabelledConll() },
+    { ext: 'txt', label: 'Text (.txt)', mime: 'text/plain', content: () => {
+      let out = `PMID: ${state.article.pmid}\nTitle: ${state.article.title}\n\nAbstract:\n${state.article.abstract}\n\n--- Distant Labels (Dictionary/KB Matching) ---\nTotal entities found: ${state.predictedEntities.length}\n\n`;
+      if (state.predictedEntities.length > 0) {
+        state.predictedEntities.forEach((e, i) => { out += `${i + 1}. "${e.text}" (offset: ${e.offset}, type: Term)\n`; });
+      } else { out += 'No entities matched.\n'; }
+      return out;
+    }},
+    { ext: 'xml', label: 'BioC XML (.xml)', mime: 'text/xml', content: () => state.biocXml || buildBioC(state.article, state.predictedEntities) },
+  ];
+  
+  // Build a simple save dialog
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  const dialog = document.createElement('div');
+  dialog.style.cssText = `background:var(--card-bg,#fff);border-radius:6px;padding:1.8rem 2rem;max-width:380px;width:90%;box-shadow:0 8px 30px rgba(0,0,0,.2);font-family:var(--body-font);color:var(--ink,#0f1117);`;
+  dialog.innerHTML = `
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:.4rem;">Save As</div>
+    <div style="font-size:.85rem;color:#8a8a8a;margin-bottom:1rem;">Choose format — you will be prompted to pick a save location</div>
+    <label style="font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6b7680;margin-bottom:.3rem;display:block;">Format</label>
+    <div id="save-formats" style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.2rem;">
+      ${formats.map((f, i) => `<label style="display:flex;align-items:center;gap:.7rem;font-size:.9rem;cursor:pointer;padding:.3rem 0;"><input type="radio" name="save-fmt" value="${i}" ${i===0?'checked':''} style="accent-color:var(--blue,#4a90d9);width:18px;height:18px;flex-shrink:0;margin:0;"/> <span>${f.label}</span></label>`).join('')}
+    </div>
+    <div style="display:flex;gap:.6rem;justify-content:flex-end;">
+      <button id="save-cancel" style="padding:.45rem .9rem;border:1.5px solid var(--rule,#c8c2b4);border-radius:3px;background:transparent;font-size:.85rem;font-weight:700;cursor:pointer;color:var(--ink,#0f1117);">Cancel</button>
+      <button id="save-confirm" style="padding:.45rem .9rem;border:none;border-radius:3px;background:var(--blue,#4a90d9);color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;">Save</button>
+    </div>
+  `;
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+  
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  dialog.querySelector('#save-cancel').addEventListener('click', () => overlay.remove());
+  dialog.querySelector('#save-confirm').addEventListener('click', async () => {
+    try {
+      const checkedRadio = dialog.querySelector('input[name="save-fmt"]:checked');
+      if (!checkedRadio) { overlay.remove(); return; }
+      const idx = parseInt(checkedRadio.value);
+      const fmt = formats[idx];
+      if (!fmt) { overlay.remove(); return; }
+      const suggestedName = `${state.article?.pmid || 'output'}.${fmt.ext}`;
+      overlay.remove();
+      const content = fmt.content();
+      if (!content) {
+        setStatus('bioc-status','error','⚠ No content to save — run the pipeline first');
+        render();
+        return;
+      }
+      const savedName = await saveWithPicker(content, suggestedName, fmt.mime);
+      if (savedName) {
+        setStatus('bioc-status','ok',`✓ Saved as ${savedName}`);
+        render();
+      }
+    } catch(e) {
+      console.error('saveAs error:', e);
+      overlay.remove();
+      setStatus('bioc-status','error',`⚠ Save failed: ${e.message || 'Unknown error'}`);
+      render();
+    }
+  });
+}
+
+function handleFileUpload() {
+  try {
+    const fileInput = document.getElementById('file-upload');
+    if (!fileInput) { setStatus('fetch-status','error','File input not found'); render(); return; }
+    const file = fileInput.files[0];
+    
+    if (!file) {
+      setStatus('fetch-status','error','Please select a .txt file');
+      render();
+      return;
+    }
+    
+    if (!file.name.endsWith('.txt')) {
+      setStatus('fetch-status','error','Only .txt files are supported');
+      render();
+      return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) {
+      setStatus('fetch-status','error','File too large — maximum 10 MB');
+      render();
+      return;
+    }
+    
+    setStatus('fetch-status','info','Reading uploaded file...');
+    render();
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const text = (e.target.result || '').trim();
+        
+        if (!text) {
+          setStatus('fetch-status','error','File is empty');
+          render();
+          return;
+        }
+        
+        const lines = text.split('\n').filter(l => l.trim());
+        const title = lines[0] || 'Uploaded Abstract';
+        const abstract = lines.slice(1).join(' ').trim() || lines[0] || text;
+        
+        state.article = {
+          pmid: file.name.replace('.txt', ''),
+          title: title,
+          abstract: abstract
+        };
+        state.pmid = state.article.pmid;
+        
+        setStep('fetch','ok');
+        setStatus('fetch-status','ok',`✓ Uploaded — ${file.name}`);
+        render();
+      } catch(e) {
+        console.error('File parse error:', e);
+        setStatus('fetch-status','error',`⚠ Failed to parse file: ${e.message || 'Unknown error'}`);
+        render();
+      }
+    };
+    
+    reader.onerror = function() {
+      setStatus('fetch-status','error','Failed to read file');
+      render();
+    };
+    
+    reader.readAsText(file);
+  } catch(e) {
+    console.error('handleFileUpload error:', e);
+    setStatus('fetch-status','error',`⚠ Upload failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DOM HELPERS
+// ═══════════════════════════════════════════════════════
+const statusStore = {};
+function setStatus(id, type, msg) { statusStore[id] = {type, msg}; }
+function setStep(key, val) { state.pipelineSteps[key] = val; }
+
+function renderStatus(id) {
+  const s = statusStore[id];
+  if (!s) return '';
+  const map = {ok:'status-ok',error:'status-err',info:'status-info',warn:'status-warn'};
+  return `<div class="status-bar ${map[s.type]||'status-info'}">${s.type==='info'?'<span class="spin"></span>':''}${s.msg}</div>`;
+}
+
+function renderAnnotatedText() {
+  try {
+    if (!state.article) return '';
+    if (!state.predictedEntities || !state.predictedEntities.length) return escapeHtml(state.article.abstract || '');
+
+    const text = state.article.abstract || '';
+    if (!text) return '';
+
+    const ranges = [];
+    const termsSorted = [...state.predictedEntities].sort((a, b) => (b.text || '').length - (a.text || '').length);
+    const occupied = new Array(text.length).fill(false);
+
+    for (const ent of termsSorted) {
+      if (!ent.text) continue;
+      const needle = ent.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let re;
+      try {
+        re = new RegExp(`\\b${needle}\\b`, 'gi');
+      } catch(regexErr) {
+        continue; // skip invalid regex
+      }
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const start = m.index;
+        const end   = m.index + m[0].length;
+        if (occupied.slice(start, end).some(Boolean)) continue;
+        for (let i = start; i < end; i++) occupied[i] = true;
+        ranges.push({ start, end, text: m[0] });
+      }
+    }
+
+    ranges.sort((a, b) => a.start - b.start);
+    let html = '';
+    let cursor = 0;
+    for (const r of ranges) {
+      if (r.start > cursor) html += escapeHtml(text.slice(cursor, r.start));
+      html += `<span class="ent ent-trait" title="Term">${escapeHtml(r.text)}</span>`;
+      cursor = r.end;
+    }
+    if (cursor < text.length) html += escapeHtml(text.slice(cursor));
+    return html;
+  } catch(e) {
+    console.error('renderAnnotatedText error:', e);
+    return escapeHtml((state.article && state.article.abstract) || '');
+  }
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function _tokenize(text) {
+  // Tokenize text (same as backend logic)
+  return text.match(/\w+(?:[-']\w+)*|[^\w\s]/g) || [];
+}
+
+// Render abstract text for manual selection (plain, selectable)
+function renderSelectableText() {
+  if (!state.article) return '';
+  return escapeHtml(state.article.abstract || '');
+}
+
+// Render annotated text with both dict (blue) and manual (green) highlights
+function renderAnnotatedTextWithManual() {
+  try {
+    if (!state.article) return '';
+    const text = state.article.abstract || '';
+    if (!text) return '';
+
+    // Collect all ranges: dict = blue, manual = green
+    const ranges = [];
+
+    // Dict entities — use predictedEntities if available, otherwise fall back to entities from dict match
+    const dictEnts = [...((state.predictedEntities && state.predictedEntities.length ? state.predictedEntities : state.entities) || [])].sort((a, b) => (b.text || '').length - (a.text || '').length);
+    const occupied = new Array(text.length).fill(false);
+
+    for (const ent of dictEnts) {
+      if (!ent.text) continue;
+      const needle = ent.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let re;
+      try { re = new RegExp('\\b' + needle + '\\b', 'gi'); } catch(e) { continue; }
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const start = m.index, end = m.index + m[0].length;
+        if (occupied.slice(start, end).some(Boolean)) continue;
+        for (let i = start; i < end; i++) occupied[i] = true;
+        ranges.push({ start, end, text: m[0], type: 'dict' });
+      }
+    }
+
+    // Manual annotations
+    const manualEnts = [...(state.manualAnnotations || [])].sort((a, b) => (b.text || '').length - (a.text || '').length);
+    for (const ent of manualEnts) {
+      if (!ent.text) continue;
+      const needle = ent.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let re;
+      try { re = new RegExp('\\b' + needle + '\\b', 'gi'); } catch(e) { continue; }
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const start = m.index, end = m.index + m[0].length;
+        if (occupied.slice(start, end).some(Boolean)) continue;
+        for (let i = start; i < end; i++) occupied[i] = true;
+        ranges.push({ start, end, text: m[0], type: 'manual' });
+      }
+    }
+
+    ranges.sort((a, b) => a.start - b.start);
+    let html = '';
+    let cursor = 0;
+    for (const r of ranges) {
+      if (r.start > cursor) html += escapeHtml(text.slice(cursor, r.start));
+      const cls = r.type === 'manual' ? 'ent ent-manual' : 'ent ent-trait';
+      const label = r.type === 'manual' ? 'Manual' : 'Term';
+      html += `<span class="${cls}" title="${label}">${escapeHtml(r.text)}</span>`;
+      cursor = r.end;
+    }
+    if (cursor < text.length) html += escapeHtml(text.slice(cursor));
+    return html;
+  } catch(e) {
+    console.error('renderAnnotatedTextWithManual error:', e);
+    return escapeHtml((state.article && state.article.abstract) || '');
+  }
+}
+
+function handleAddManualAnnotation() {
+  try {
+    const selObj = window.getSelection();
+    if (!selObj || selObj.isCollapsed) {
+      setStatus('anno-status','error','Select some text in the abstract first');
+      render();
+      return;
+    }
+    
+    const selectedText = selObj.toString().trim().replace(/^[^\w]+|[^\w]+$/g, '');
+    if (!selectedText) {
+      setStatus('anno-status','error','Selection is empty');
+      render();
+      return;
+    }
+    
+    // Check if already annotated
+    const isDuplicate = state.manualAnnotations.some(a => a.text.toLowerCase() === selectedText.toLowerCase()) ||
+                        (state.predictedEntities || []).some(e => e.text.toLowerCase() === selectedText.toLowerCase());
+    if (isDuplicate) {
+      setStatus('anno-status','warn','⚠ This term is already annotated');
+      render();
+      return;
+    }
+    
+    // Find offset in abstract
+    const abstract = state.article ? state.article.abstract : '';
+    const offset = abstract.toLowerCase().indexOf(selectedText.toLowerCase());
+    
+    state.manualAnnotations.push({ text: selectedText, offset: offset >= 0 ? offset : 0 });
+    setStatus('anno-status','ok',`✓ Added "${selectedText}" as manual annotation`);
+    render();
+  } catch(e) {
+    console.error('handleAddManualAnnotation error:', e);
+    setStatus('anno-status','error',`⚠ Failed to add annotation: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+function handleRemoveManualAnnotation(index) {
+  try {
+    if (index >= 0 && index < state.manualAnnotations.length) {
+      const removed = state.manualAnnotations.splice(index, 1)[0];
+      setStatus('anno-status','ok',`✓ Removed "${removed.text}"`);
+      render();
+    }
+  } catch(e) {
+    console.error('handleRemoveManualAnnotation error:', e);
+    render();
+  }
+}
+
+function handleAddAnnotationToDict(index) {
+  try {
+    if (index >= 0 && index < state.manualAnnotations.length) {
+      const term = state.manualAnnotations[index].text.trim();
+      if (!term) return;
+      
+      // Check if already in dictionary
+      const dictTerms = (state.dictionary || '').split('\n').map(l => l.trim().toLowerCase()).filter(Boolean);
+      if (dictTerms.includes(term.toLowerCase())) {
+        setStatus('anno-status','warn',`⚠ "${term}" is already in dictionary`);
+        render();
+        return;
+      }
+      
+      // Add to dictionary and remove from manual annotations
+      state.dictionary = state.dictionary ? state.dictionary.trim() + '\n' + term : term;
+      state.manualAnnotations.splice(index, 1);
+      setStatus('anno-status','ok',`✓ Added "${term}" to dictionary`);
+      render();
+    }
+  } catch(e) {
+    console.error('handleAddAnnotationToDict error:', e);
+    render();
+  }
+}
+
+// Expose manual annotation functions
+window.handleAddManualAnnotation = handleAddManualAnnotation;
+window.handleRemoveManualAnnotation = handleRemoveManualAnnotation;
+window.handleAddAnnotationToDict = handleAddAnnotationToDict;
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+function render() {
+  const S = state;
+  const P = S.pipelineSteps;
+
+  const modelDataset = S.selectedModel.charAt(0).toUpperCase() + S.selectedModel.slice(1);
+
+  document.getElementById('app').innerHTML = `
+
+<!-- ROW 1: Text Input + Dictionary (with Match Results) + Annotated Abstract -->
+<div class="grid-4">
+
+  <!-- STEP 1: PubMed -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-fetch">1</span>
+      <div><div class="card-title">Text Input</div></div>
+    </div>
+    <label>PMID</label>
+    <input id="pmid-input" type="text" value="${S.pmid}" placeholder="e.g. 36254397" style="margin-bottom:.8rem"/>
+    <div class="btn-row" style="margin-top:0;margin-bottom:.8rem;">
+      <button class="btn btn-slate" onclick="handleFetch()">Fetch Abstract</button>
+      <button class="btn btn-ghost" onclick="handleConll()" ${!S.article?'disabled':''}>→ CoNLL</button>
+    </div>
+    <div style="text-align:center;color:var(--rule);font-size:.75rem;margin:.5rem 0;text-transform:uppercase;letter-spacing:.1em;">or</div>
+    <label>Upload Abstract (.txt)</label>
+    <input type="file" id="file-upload" accept=".txt" style="margin-bottom:.5rem;font-size:.85rem;padding:.4rem .6rem;"/>
+    <button class="btn btn-amber" onclick="handleFileUpload()" style="width:100%;">Upload Text File</button>
+    ${renderStatus('fetch-status')}
+    ${renderStatus('conll-status')}
+    ${S.article ? `
+    <div class="abstract-box">
+      <div class="abstract-title" id="abs-title"></div>
+      <div class="abstract-body" id="abs-body"></div>
+    </div>` : ''}
+    ${S.conll ? `
+    <div class="conll-box">${S.conll.split('\n').slice(0,14).join('\n')}<span style="color:#4a5a50">\n…</span></div>` : ''}
+  </div>
+
+  <!-- STEP 2: Dictionary + Match Results -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-dict">2</span>
+      <div><div class="card-title">Dictionary</div></div>
+    </div>
+    <input type="file" id="dict-file-upload" accept=".txt" style="display:none;"/>
+    <input type="file" id="dict-file-upload-multi" accept=".txt" multiple style="display:none;"/>
+    <div class="btn-row" style="margin-top:0;margin-bottom:.5rem;">
+      <button class="btn btn-amber" onclick="handleDictUpload()" style="flex:1;">Upload</button>
+      <button class="btn btn-ghost" onclick="handleDictUploadMultiple()" style="flex:1;">Load Multiple</button>
+    </div>
+    ${S.dictLoadedFiles.length ? `
+    <div style="background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:3px;padding:.5rem .7rem;margin-bottom:.7rem;font-size:.8rem;color:var(--blue);font-family:var(--body-font);">
+      📂 ${S.dictLoadedFiles.map(f => '<strong>' + escapeHtml(f) + '</strong>').join(', ')}
+    </div>` : ''}
+    <label>Terms (one per line)</label>
+    <textarea id="dict-input">${S.dictionary}</textarea>
+    <p class="input-hint">One term per line — edit manually or upload .txt files above</p>
+    <div class="btn-row">
+      <button class="btn btn-amber" onclick="handleDictMatch()" ${!S.article?'disabled':''}>Apply Dictionary Match</button>
+      <button class="btn btn-ghost" onclick="handleSaveDict()" ${!(S.dictionary||'').trim()?'disabled':''}>💾 Save Dictionary</button>
+    </div>
+    ${renderStatus('dict-status')}
+    ${S.entities.length ? `
+    <div style="margin-top:.9rem;">
+      <div class="card-head" style="margin-bottom:.6rem;padding-bottom:.5rem;">
+        <div>
+          <div class="card-title">Match Results</div>
+          <div class="card-sub">${S.entities.length} match(es) · ${S.dictionary.split('\n').filter(l=>l.trim()).length} terms</div>
+        </div>
+      </div>
+      <div style="background:var(--input-bg);border:1.5px solid var(--rule);border-radius:3px;padding:.7rem .9rem;max-height:200px;overflow-y:auto;">
+        ${S.entities.map((e,i) => `
+        <div style="display:flex;align-items:baseline;gap:.5rem;padding:.25rem 0;border-bottom:1px solid var(--cream);font-family:var(--body-font);font-size:.85rem;">
+          <span style="color:var(--rule);font-size:.7rem;min-width:20px;">${i+1}.</span>
+          <span style="font-weight:700;color:#3a8fd4;">${escapeHtml(e.text)}</span>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+  </div>
+
+  <!-- STEP 3: Annotated Abstract (merged distant labels + manual annotation) -->
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-model">3</span>
+      <div>
+        <div class="card-title">Annotated Abstract</div>
+        <div class="card-sub"><span style="color:#3a8fd4;font-weight:700;">blue</span> = dictionary match · <span style="color:#2ea84e;font-weight:700;">green</span> = manual annotation</div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:0;margin-bottom:.5rem;">
+      <button class="btn btn-sage" onclick="handleAddManualAnnotation()" id="btn-add-anno" disabled>+ Add Selection</button>
+    </div>
+    ${renderStatus('predict-status')}
+    ${S.article ? `
+    <div class="card-sub" style="margin-bottom:.4rem;margin-top:.6rem;">Select text below, then click <strong>+ Add Selection</strong> to annotate manually</div>
+    <div id="manual-select-text" class="anno-select-box" style="max-height:400px;overflow-y:auto;line-height:2.2;font-size:1rem;">${S.entities.length || S.manualAnnotations.length ? renderAnnotatedTextWithManual() : renderSelectableText()}</div>
+    ${S.manualAnnotations.length ? `
+    <div style="margin-top:.7rem;">
+      <label style="margin-bottom:.4rem;">Manual Labels</label>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+        ${S.manualAnnotations.map((a,i) => `
+        <span class="manual-tag">
+          ${escapeHtml(a.text)}
+          <span class="manual-tag-adddict" onclick="handleAddAnnotationToDict(${i})" title="Add to dictionary">+Dictionary</span>
+          <span class="manual-tag-remove" onclick="handleRemoveManualAnnotation(${i})" title="Remove">×</span>
+        </span>`).join('')}
+      </div>
+    </div>` : ''}
+    ${renderStatus('anno-status')}
+    ${S.entities.length || S.manualAnnotations.length ? `
+    <div class="stats-row" style="margin-top:.8rem;">
+      <div class="stat"><div class="stat-n">${S.entities.length}</div><div class="stat-l">Dictionary</div></div>
+      <div class="stat"><div class="stat-n">${S.manualAnnotations.length}</div><div class="stat-l">Manual</div></div>
+      <div class="stat"><div class="stat-n">${S.entities.length + S.manualAnnotations.length}</div><div class="stat-l">Total</div></div>
+    </div>` : ''}
+    ` : `
+    <div style="padding:2rem;text-align:center;color:#bbb;font-size:.85rem;background:var(--input-bg);border:1.5px dashed var(--rule);border-radius:3px;font-family:var(--body-font);">
+      Fetch an abstract to start annotating
+    </div>`}
+  </div>
+
+</div>
+
+<!-- ROW 2: Output -->
+<div class="grid-full">
+  <div class="card">
+    <div class="card-head">
+      <span class="step-pill step-bioc">4</span>
+      <div><div class="card-title">Output</div></div>
+    </div>
+    <div class="btn-row" style="margin-bottom:.8rem;">
+        <button class="btn btn-slate" onclick="handleBioC()" ${!S.article?'disabled':''}>Generate BioC XML</button>
+        <button class="btn btn-ghost" onclick="downloadXML()" ${!S.biocXml?'disabled':''}>⬇ BioC XML</button>
+        <button class="btn btn-amber" onclick="downloadCoNLL()" ${!S.article?'disabled':''}>⬇ CoNLL</button>
+        <button class="btn btn-ghost" onclick="downloadLabelledText()" ${!S.article?'disabled':''}>⬇ Text</button>
+        <button class="btn btn-ghost" onclick="saveAs()" ${!S.article?'disabled':''}>💾 Save As</button>
+    </div>
+    ${renderStatus('bioc-status')}
+    ${S.biocXml ? `
+    <div class="xml-box">
+      <pre class="xml-code">${syntaxHighlightXML(S.biocXml)}</pre>
+    </div>` : ''}
+  </div>
+</div>
+`;
+
+  // re-bind inputs
+  document.getElementById('pmid-input')?.addEventListener('input', e => { state.pmid = e.target.value; });
+  document.getElementById('dict-input')?.addEventListener('input', e => { state.dictionary = e.target.value; });
+  
+  // Enable/disable Add Selection button based on text selection within the manual annotation box
+  const selectBox = document.getElementById('manual-select-text');
+  const addBtn = document.getElementById('btn-add-anno');
+  if (selectBox && addBtn) {
+    document.addEventListener('selectionchange', function onSelChange() {
+      try {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed) { addBtn.disabled = true; return; }
+        // Check if selection is within the annotation select box
+        const anchorNode = sel.anchorNode;
+        const focusNode = sel.focusNode;
+        const inBox = selectBox.contains(anchorNode) && selectBox.contains(focusNode);
+        addBtn.disabled = !inBox || !sel.toString().trim();
+      } catch(e) { addBtn.disabled = true; }
+    });
+  }
+  
+  // Safely set abstract text via textContent (never innerHTML) to avoid injection
+  if (state.article) {
+    const titleEl = document.getElementById('abs-title');
+    const bodyEl  = document.getElementById('abs-body');
+    if (titleEl) titleEl.textContent = state.article.title;
+    if (bodyEl)  bodyEl.textContent  = state.article.abstract; // full text, not truncated
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  EVENT HANDLERS
+// ═══════════════════════════════════════════════════════
+async function handleFetch()         { state.pmid = document.getElementById('pmid-input').value; await fetchAbstract(); }
+function handleConll()               { generateConll(); }
+function handleDictMatch()           { 
+  const el = document.getElementById('dict-input');
+  if (el) state.dictionary = el.value; 
+  runDictMatch(); 
+}
+async function handleBioC()          { await generateBioC(); }
+function handleReset()               { resetApp(); }
+
+function handleDictUpload() {
+  try {
+    const fileInput = document.getElementById('dict-file-upload');
+    if (!fileInput) { setStatus('dict-status','error','File input not found'); render(); return; }
+    
+    fileInput.onchange = function() {
+      const file = fileInput.files[0];
+      if (!file) return;
+      
+      if (!file.name.endsWith('.txt')) {
+        setStatus('dict-status','error','Only .txt files are supported');
+        render();
+        return;
+      }
+      
+      setStatus('dict-status','info',`Reading ${file.name}...`);
+      render();
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const text = (e.target.result || '').trim();
+          const terms = text.split('\n').map(l => l.trim()).filter(Boolean);
+          
+          if (terms.length === 0) {
+            setStatus('dict-status','error','Dictionary file is empty');
+            render();
+            return;
+          }
+          
+          state.dictionary = terms.join('\n');
+          state.dictLoadedFiles = [file.name];
+          state.entities = [];
+          state.predictedEntities = [];
+          setStatus('dict-status','ok',`✓ Loaded ${terms.length} terms from ${file.name}`);
+          render();
+        } catch(parseErr) {
+          setStatus('dict-status','error',`⚠ Failed to parse: ${parseErr.message || 'Unknown error'}`);
+          render();
+        }
+      };
+      reader.onerror = function() {
+        setStatus('dict-status','error','Failed to read dictionary file');
+        render();
+      };
+      reader.readAsText(file);
+      fileInput.value = '';
+    };
+    
+    fileInput.click();
+  } catch(e) {
+    console.error('handleDictUpload error:', e);
+    setStatus('dict-status','error',`⚠ Upload failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+function handleDictUploadMultiple() {
+  try {
+    const multiInput = document.getElementById('dict-file-upload-multi');
+    if (!multiInput) { setStatus('dict-status','error','Multiple file input not found'); render(); return; }
+    multiInput.onchange = function() {
+      try {
+        const files = Array.from(multiInput.files);
+        if (files.length === 0) return;
+        
+        const nonTxt = files.filter(f => !f.name.endsWith('.txt'));
+        if (nonTxt.length > 0) {
+          setStatus('dict-status','error',`Only .txt files are supported. Skipped: ${nonTxt.map(f=>f.name).join(', ')}`);
+          render();
+          return;
+        }
+        
+        setStatus('dict-status','info',`Reading ${files.length} dictionary file(s)...`);
+        render();
+        
+        let loaded = 0;
+        let errors = 0;
+        const allTerms = new Set(
+          (state.dictionary || '').split('\n').map(l => l.trim()).filter(Boolean)
+        );
+        
+        files.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const text = (e.target.result || '').trim();
+              const terms = text.split('\n').map(l => l.trim()).filter(Boolean);
+              terms.forEach(t => allTerms.add(t));
+            } catch(parseErr) {
+              console.error('Error parsing file:', file.name, parseErr);
+              errors++;
+            }
+            loaded++;
+            
+            if (loaded === files.length) {
+              state.dictionary = Array.from(allTerms).join('\n');
+              state.dictLoadedFiles = files.map(f => f.name);
+              state.entities = [];
+              state.predictedEntities = [];
+              if (errors > 0) {
+                setStatus('dict-status','warn',`⚠ ${errors} file(s) had issues — ${allTerms.size} unique terms loaded`);
+              } else {
+                setStatus('dict-status','ok',`✓ Merged ${files.length} file(s) — ${allTerms.size} unique terms total`);
+              }
+              render();
+            }
+          };
+          reader.onerror = function() {
+            loaded++;
+            errors++;
+            if (loaded === files.length) {
+              state.dictionary = Array.from(allTerms).join('\n');
+              setStatus('dict-status','warn',`⚠ ${errors} file(s) failed to load — ${allTerms.size} terms loaded`);
+              render();
+            }
+          };
+          reader.readAsText(file);
+        });
+        
+        // Reset the input so the same files can be re-selected
+        multiInput.value = '';
+      } catch(e) {
+        console.error('Multi-upload processing error:', e);
+        setStatus('dict-status','error',`⚠ Failed to process files: ${e.message || 'Unknown error'}`);
+        render();
+      }
+    };
+    multiInput.click();
+  } catch(e) {
+    console.error('handleDictUploadMultiple error:', e);
+    setStatus('dict-status','error',`⚠ Upload failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+async function handleSaveDict() {
+  try {
+    const dict = (state.dictionary || '').trim();
+    if (!dict) {
+      setStatus('dict-status','error','Dictionary is empty — nothing to save');
+      render();
+      return;
+    }
+    
+    const savedName = await saveWithPicker(dict, 'dictionary.txt', 'text/plain', [
+      { description: 'Text Files', accept: { 'text/plain': ['.txt'] } }
+    ]);
+    if (savedName) {
+      setStatus('dict-status','ok',`✓ Dictionary saved as ${savedName}`);
+      render();
+    }
+  } catch(e) {
+    console.error('handleSaveDict error:', e);
+    setStatus('dict-status','error',`⚠ Save failed: ${e.message || 'Unknown error'}`);
+    render();
+  }
+}
+
+// expose to inline onclick
+window.handleFetch       = handleFetch;
+window.handleFileUpload  = handleFileUpload;
+window.handleConll       = handleConll;
+window.handleDictMatch   = handleDictMatch;
+window.handleDictUpload  = handleDictUpload;
+window.handleDictUploadMultiple = handleDictUploadMultiple;
+window.handleSaveDict    = handleSaveDict;
+window.handleBioC        = handleBioC;
+window.handleReset       = handleReset;
+window.downloadXML       = downloadXML;
+window.downloadCoNLL     = downloadCoNLL;
+window.downloadLabelledText = downloadLabelledText;
+window.saveAs            = saveAs;
+
+// ═══════════════════════════════════════════════════════
+//  GLOBAL ERROR HANDLER
+// ═══════════════════════════════════════════════════════
+window.addEventListener('error', function(event) {
+  console.error('Global error:', event.error || event.message);
+  // Prevent app from crashing — show user-friendly message
+  try {
+    const app = document.getElementById('app');
+    if (app && !app.innerHTML.trim()) {
+      app.innerHTML = '<div style="padding:2rem;text-align:center;color:#a83240;font-size:1rem;">An unexpected error occurred. Please click Reset to restart the app.</div>';
+    }
+  } catch(e) { /* silently ignore */ }
+});
+
+window.addEventListener('unhandledrejection', function(event) {
+  console.error('Unhandled promise rejection:', event.reason);
+  event.preventDefault(); // Prevent browser default error logging in console
+});
+
+// ═══════════════════════════════════════════════════════
+//  DARK MODE & ACCESSIBILITY
+// ═══════════════════════════════════════════════════════
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  const btn = document.getElementById('dark-mode-btn');
+  btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  if (isDark) btn.classList.add('active'); else btn.classList.remove('active');
+}
+
+function toggleA11yPanel() {
+  const panel = document.getElementById('a11y-panel');
+  panel.classList.toggle('open');
+  const btn = document.getElementById('a11y-btn');
+  if (panel.classList.contains('open')) btn.classList.add('active'); else btn.classList.remove('active');
+}
+
+function toggleA11y(className, enabled) {
+  if (enabled) {
+    document.body.classList.add(className);
+  } else {
+    document.body.classList.remove(className);
+  }
+}
+
+window.toggleDarkMode  = toggleDarkMode;
+window.toggleA11yPanel = toggleA11yPanel;
+window.toggleA11y      = toggleA11y;
+
+// first render
+render();
+</script>
+</body>
+</html>
