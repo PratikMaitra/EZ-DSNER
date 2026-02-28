@@ -23,14 +23,14 @@ EZ-DSNER has two main modules:
 
 ## Supported DS-NER Methods
 
-Please download the repositories for the methods from the respective GitHub. Some of the methods might require patching to work.
+Please download the method repositories from their respective GitHub repositories. Some of the methods might require patching to work.
 
 | Method | Reference | Training Strategy |
 |--------|-----------|-------------------|
-| [CuPuL](https://aclanthology.org/2025.coling-main.730/) | Li et al., COLING 2025 | Confidence-based Multi-class PU Learning + Curriculum + Self-training |
-| [BOND](https://dl.acm.org/doi/10.1145/3394486.3403149) | Liang et al., KDD 2020 | BERT + Self-training with Mean Teacher |
-| [ATSEN](https://ojs.aaai.org/index.php/AAAI/article/view/26584) | Qu et al., AAAI 2023 | Adaptive Teacher + Student Ensemble |
-| [DeSERT](https://proceedings.neurips.cc/paper_files/paper/2023/hash/35c050dc5de72eabe0c0cbafe7e0d8cc-Abstract-Conference.html) | Wang et al., NeurIPS 2023 | Debiased and 
+| [CuPuL]
+| [BOND]
+| [ATSEN]
+| [DeSERT]
 ---
 
 ## Repository Structure
@@ -68,7 +68,7 @@ EZ-DSNER/
 
 ## Installation
 
-We recommedn creating a conda/python environment based on Python 3.7 which is the most compatible with the methods.
+We recommend creating a conda/Python environment based on Python 3.7, which is the most compatible with the methods.
 
 ### Prerequisites
 
