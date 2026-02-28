@@ -168,7 +168,7 @@ EZ-DSNER includes a rule-based post-processing module that refines DS-NER predic
 | `abbrev_resolution` | Propagates labels between full forms and abbreviations (e.g., *Main Stem Node Number (MSNN)*) |
 | `pos_filtering` | Removes singleton false positives that are not nouns based on POS tagging |
 
-=
+
 
 ## Helper Scripts
 
