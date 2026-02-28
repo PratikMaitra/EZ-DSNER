@@ -23,7 +23,7 @@ EZ-DSNER has two main modules:
 
 ## Supported DS-NER Methods
 
-Please download the method repositories from their respective GitHub repositories. Some of the methods might require patching to work.
+Please download the method repositories from their respective GitHub repositories. Some of the methods might require patching to work. For datasets, please download commonly used DS-NER datasets like QTL etc
 
 | Method | Reference | Training Strategy |
 |--------|-----------|-------------------|
