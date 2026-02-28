@@ -27,6 +27,7 @@ Please download the method repositories from their respective GitHub repositorie
 
 | Method | 
 |--------|
+| [CuPUL] |
 | [BOND] |
 | [ATSEN] |
 | [DeSERT] |
