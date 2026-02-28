@@ -73,7 +73,7 @@ We recommend creating a conda/Python environment based on Python 3.7, which is t
 ### Prerequisites
 
 - [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-- NVIDIA GPU with CUDA 11.6 (for training)
+- GPU with CUDA 11.6 (for training)
 
 ### Setup
 
