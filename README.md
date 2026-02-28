@@ -25,9 +25,8 @@ EZ-DSNER has two main modules:
 
 Please download the method repositories from their respective GitHub repositories. Some of the methods might require patching to work. For datasets, please download commonly used DS-NER datasets like QTL etc
 
-| Method | Reference | Training Strategy |
-|--------|-----------|-------------------|
-| [CuPuL]
+| Method | 
+|--------|
 | [BOND]
 | [ATSEN]
 | [DeSERT]
