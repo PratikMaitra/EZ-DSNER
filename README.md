@@ -27,9 +27,9 @@ Please download the method repositories from their respective GitHub repositorie
 
 | Method | 
 |--------|
-| [BOND]
-| [ATSEN]
-| [DeSERT]
+| [BOND] |
+| [ATSEN] |
+| [DeSERT] |
 ---
 
 ## Repository Structure
