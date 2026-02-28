@@ -133,7 +133,7 @@ from dsner_wrapper import DSNERWrapper
 cupul = DSNERWrapper(
     method="CuPuL",
     project_root=".",
-    dataset="qtl",
+    dataset="QTL",
     gpu_ids="0",
     pretrained_model="roberta-base",
     learning_rate=5e-7,
